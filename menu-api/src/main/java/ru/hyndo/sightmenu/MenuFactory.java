@@ -10,4 +10,6 @@ public interface MenuFactory {
 
     PaginatedMenuSession createPaginatedSession(Player player, PaginatedMenuTemplate menuTemplate);
 
+    InventorySwitcher createDefaultInventorySwitcher();
+
 }

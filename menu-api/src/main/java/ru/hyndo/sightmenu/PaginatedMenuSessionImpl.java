@@ -5,23 +5,27 @@ import org.bukkit.entity.Player;
 import ru.hyndo.sightmenu.paginated.PaginatedMenuSession;
 import ru.hyndo.sightmenu.paginated.PaginatedMenuTemplate;
 
-import java.util.ArrayList;
-
 public class PaginatedMenuSessionImpl implements PaginatedMenuSession {
 
     private Player owner;
     private PaginatedMenuTemplate template;
     private MenuSession currentPage;
-    private int currentPageGlobalIndex;
     private MenuFactory menuFactory;
+    private InventorySwitcher switcher;
 
     PaginatedMenuSessionImpl(Player owner, PaginatedMenuTemplate template, MenuFactory menuFactory) {
         this.owner = owner;
         this.template = template;
-        this.currentPageGlobalIndex = template.allPages().indexOf(template.mainPage());
-        if(currentPageGlobalIndex == -1) {
-            throw new IllegalArgumentException("Invalid template. Main page isn't among template's pages");
+        this.menuFactory = menuFactory;
+        if(!template.switcher().getBoundSession().isPresent()) {
+            template.switcher().bindToSession(this);
+        } else {
+            PaginatedMenuSession boundTo = template.switcher().getBoundSession().get();
+            if(boundTo != this) {
+                throw new IllegalArgumentException("Got menu switcher already bound to another session");
+            }
         }
+        menuFactory.createSingleSession(owner, template.mainPage());
     }
 
     @Override
@@ -30,40 +34,15 @@ public class PaginatedMenuSessionImpl implements PaginatedMenuSession {
     }
 
     @Override
-    public MenuSession switchPrevious() throws IllegalArgumentException {
-        Preconditions.checkState(hasPrevious(), "Can not switch to a non-existent page");
-        MenuTemplate newTemplate = template.allPages().get(--currentPageGlobalIndex);
-        return menuFactory.createSingleSession(owner, newTemplate);
+    public InventorySwitcher getSwitcher() {
+        return switcher;
     }
 
     @Override
-    public MenuSession switchNext() throws IllegalArgumentException {
-        Preconditions.checkState(hasNext(), "Can not switch to a non-existent page");
-        MenuTemplate newTemplate = template.allPages().get(++currentPageGlobalIndex);
-        return menuFactory.createSingleSession(owner, newTemplate);
+    public MenuFactory getFactory() {
+        return menuFactory;
     }
 
-    @Override
-    public boolean hasPrevious() {
-        int newIndex = currentPageGlobalIndex - 1;
-        return template.allPages().size() > newIndex;
-    }
-
-    @Override
-    public boolean hasNext() {
-        int newIndex = currentPageGlobalIndex + 1;
-        return template.allPages().size() > newIndex;
-    }
-
-    @Override
-    public MenuSession switchToPage(int pageIndex) throws IllegalArgumentException {
-        if(template.allPages().size() > pageIndex) {
-            throw new IndexOutOfBoundsException("Unknown page");
-        }
-        this.currentPageGlobalIndex = pageIndex;
-        MenuTemplate newTemplate = template.allPages().get(pageIndex);
-        return menuFactory.createSingleSession(owner, newTemplate);
-    }
 
     @Override
     public Player getOwner() {
