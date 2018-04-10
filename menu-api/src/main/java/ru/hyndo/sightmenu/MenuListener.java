@@ -23,23 +23,23 @@ public class MenuListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
+        System.out.println("inventory click");
         if(!(event.getInventory().getHolder() instanceof MenuSessionImpl)) {
             return;
         }
+        System.out.println("right holder");
         Player player = (Player) event.getWhoClicked();
         Optional<MenuSession> sessionOptional = sessionResolver.getSession(player);
         sessionOptional.ifPresent(session -> {
+            System.out.println("session is present");
             MenuSession menuSession = sessionOptional.get();
             Inventory inventory = menuSession.getInventory();
             MenuTemplate template = menuSession.getTemplate();
             Optional<MenuItem> itemOptional = menuSession.getItemByIndex(event.getSlot());
+            System.out.println("itemOptional is present " + itemOptional.isPresent());
             itemOptional.ifPresent(menuItem -> menuItem.onClick().accept(new MenuItemClick(player, session, event)));
+            event.setCancelled(true);
         });
-    }
-
-    @EventHandler
-    public void onOpen(InventoryOpenEvent event) {
-
     }
 
     @EventHandler

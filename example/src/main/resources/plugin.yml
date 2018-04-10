@@ -1,0 +1,4 @@
+main: ru.hyndo.signmenu.example.SightMenuExamplePlugin
+version: 1.0
+name: SightMenuExample
+author: hyndo

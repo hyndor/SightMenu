@@ -1,7 +1,9 @@
 package ru.hyndo.signmenu.example;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -11,7 +13,7 @@ import ru.hyndo.sightmenu.MenuOpenProcessors;
 import ru.hyndo.sightmenu.MenuTemplate;
 import ru.hyndo.sightmenu.item.MenuIcon;
 
-public class SightMenuExamplePlugin extends JavaPlugin {
+public class SightMenuExamplePlugin extends JavaPlugin implements Listener {
 
 
     private MenuApiInstance apiInstance;
@@ -30,7 +32,7 @@ public class SightMenuExamplePlugin extends JavaPlugin {
                         apiInstance.itemBuilder()
                                 .cachedItem()
                                 .withClickListener(menuItemClick -> menuItemClick.getPlayer().sendMessage("Епать ни встать ты кликнул"))
-                                .setMenuIcon(new MenuIcon(new ItemStack(Material.STONE), 4))
+                                .setMenuIcon(new MenuIcon(new ItemStack(Material.STONE), 5))
                                 .build()
                 )
                 .withItem(
@@ -41,6 +43,7 @@ public class SightMenuExamplePlugin extends JavaPlugin {
                                 .build()
                 )
                 .createMenuTemplateImpl();
+        Bukkit.getPluginManager().registerEvents(this, this);
     }
 
     @EventHandler

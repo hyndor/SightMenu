@@ -5,12 +5,14 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
-public class SessionResolverImpl implements SessionResolver {
+public class SessionResolverImpl implements SessionResolver, Listener {
 
 
     private Multimap<MenuTemplate, MenuSession> activeSessionsByTemplates = HashMultimap.create();
@@ -27,6 +29,12 @@ public class SessionResolverImpl implements SessionResolver {
     @Override
     public Optional<MenuSession> getSession(Player player) {
         return Optional.ofNullable(playerSessions.get(player));
+    }
+
+
+    @EventHandler
+    public void onNewSessionCreate() {
+
     }
 
     void addNewSession(MenuSession session) {

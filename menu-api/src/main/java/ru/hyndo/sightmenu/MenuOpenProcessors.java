@@ -29,7 +29,8 @@ public class MenuOpenProcessors {
         @Override
         public OpenProcessorResponse apply(MenuSession menu, Consumer<Inventory> listener) {
             Map<Integer, MenuItem> indexes = new HashMap<>();
-            Inventory inv = Bukkit.createInventory(null, menu.getTemplate().getRows() * 9, color(menu.getTemplate().getName()));
+            Inventory inv = Bukkit.createInventory(menu, menu.getTemplate().getRows() * 9, color(menu.getTemplate().getName()));
+            System.out.println("Inventory holder " + inv.getHolder());
             for(MenuItem item : menu.getTemplate().getItems()){
                 IconRequest request = new IconRequest(menu.getOwner(), menu);
                 MenuIcon icon = item.getIcon(request);
