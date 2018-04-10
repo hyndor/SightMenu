@@ -1,4 +1,4 @@
-package ru.hyndo.sightmenu.api.util;
+package ru.hyndo.sightmenu.util;
 
 import org.bukkit.ChatColor;
 
