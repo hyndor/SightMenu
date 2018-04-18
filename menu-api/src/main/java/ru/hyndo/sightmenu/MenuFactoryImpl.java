@@ -16,7 +16,7 @@ public final class MenuFactoryImpl implements MenuFactory {
 
     @Override
     public MenuSession createSingleSession(Player player, MenuTemplate menuTemplate) {
-        MenuSession menuSession = new MenuSessionImpl(menuTemplate, menuTemplate.getOpenProcessor(), player);
+        MenuSession menuSession = new MenuSessionImpl(menuTemplate, menuTemplate.getOpenProcessor(), player, map -> {});
         sessionResolver.addNewSession(menuSession);
         return menuSession;
     }
@@ -26,7 +26,6 @@ public final class MenuFactoryImpl implements MenuFactory {
         return new PaginatedMenuSessionImpl(player, menuTemplate, this);
     }
 
-    @Override
     public InventorySwitcher createDefaultInventorySwitcher() {
         return new InventorySwitcherImpl();
     }

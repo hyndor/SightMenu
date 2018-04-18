@@ -2,17 +2,21 @@ package ru.hyndo.sightmenu;
 
 import ru.hyndo.sightmenu.item.MenuItem;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public interface MenuTemplate {
 
-    String getName();
+    @Nonnull String getName();
 
-    Collection<MenuItem> getItems();
+    @Nonnull Collection<MenuItem> getItems();
 
     int getRows();
 
-    MenuOpenProcessor getOpenProcessor();
+    @Nonnull MenuOpenProcessor getOpenProcessor();
+
 
 }

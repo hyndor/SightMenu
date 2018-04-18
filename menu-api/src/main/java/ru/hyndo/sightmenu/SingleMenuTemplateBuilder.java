@@ -1,20 +1,17 @@
 package ru.hyndo.sightmenu;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Maps;
 import ru.hyndo.sightmenu.item.MenuItem;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Consumer;
 
 public class SingleMenuTemplateBuilder {
     private String name = "SightMenu";
     private List<MenuItem> items = new ArrayList<>();
     private int rows = 6;
     private MenuOpenProcessor openProcessor = MenuOpenProcessors.standardOpen();
+    private Consumer<Map<String, Object>> headerConsumer = map -> {};
 
     SingleMenuTemplateBuilder() {
     }
@@ -22,6 +19,12 @@ public class SingleMenuTemplateBuilder {
     public SingleMenuTemplateBuilder setName(String name) {
         Preconditions.checkNotNull(name, "Null name");
         this.name = name;
+        return this;
+    }
+
+    public SingleMenuTemplateBuilder withHeaderConsumer(Consumer<Map<String, Object>> headerConsumer) {
+        Preconditions.checkNotNull(name, "Null consumer");
+        this.headerConsumer = headerConsumer.andThen(headerConsumer);
         return this;
     }
 
@@ -33,7 +36,6 @@ public class SingleMenuTemplateBuilder {
 
     public SingleMenuTemplateBuilder withItem(MenuItem item) {
         Preconditions.checkNotNull(item, "Null item");
-//        this.items.put(item.getIcon().getIndex(), item);
         this.items.add(item);
         return this;
     }
@@ -51,6 +53,6 @@ public class SingleMenuTemplateBuilder {
     }
 
     public MenuTemplate createMenuTemplateImpl() {
-        return new ImmutableMenuTemplate(name, items, rows, openProcessor);
+        return new ImmutableMenuTemplate(name, items, rows, openProcessor, headerConsumer);
     }
 }

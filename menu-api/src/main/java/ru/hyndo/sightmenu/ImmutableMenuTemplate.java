@@ -1,9 +1,12 @@
 package ru.hyndo.sightmenu;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import ru.hyndo.sightmenu.item.MenuItem;
 
+import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.function.Consumer;
 
 public class ImmutableMenuTemplate implements MenuTemplate {
 
@@ -19,11 +22,13 @@ public class ImmutableMenuTemplate implements MenuTemplate {
         this.openProcessor = openProcessor;
     }
 
+    @Nonnull
     @Override
     public String getName() {
         return name;
     }
 
+    @Nonnull
     @Override
     public Collection<MenuItem> getItems() {
         return ImmutableSet.copyOf(indexes);
@@ -34,10 +39,13 @@ public class ImmutableMenuTemplate implements MenuTemplate {
         return rows;
     }
 
+    @Nonnull
     @Override
     public MenuOpenProcessor getOpenProcessor() {
         return openProcessor;
     }
+
+
 
 
 }

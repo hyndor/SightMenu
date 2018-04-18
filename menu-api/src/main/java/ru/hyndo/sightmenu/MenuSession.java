@@ -3,7 +3,10 @@ package ru.hyndo.sightmenu;
 import org.bukkit.inventory.InventoryHolder;
 import ru.hyndo.sightmenu.item.MenuItem;
 
+import javax.annotation.Nonnull;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public interface MenuSession extends OwnedMenu, InventoryHolder {
 
@@ -14,5 +17,16 @@ public interface MenuSession extends OwnedMenu, InventoryHolder {
     boolean isOpeningFinished();
 
     void close();
+
+    void sendHeader(Map<String, Object> headers);
+
+    @Nonnull
+    Consumer<Map<String, Object>> getHeaderConsumer();
+
+    void setHeaderConsumer(@Nonnull Consumer<Map<String, Object>> consumer);
+
+    default void addHeaderConsumer(@Nonnull Consumer<Map<String, Object>> consumer) {
+        setHeaderConsumer(getHeaderConsumer().andThen(consumer));
+    }
 
 }

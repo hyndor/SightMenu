@@ -33,26 +33,24 @@ public class SightMenuExamplePlugin extends JavaPlugin implements Listener {
     }
 
     private void initPaginatedTemplate() {
-        InventorySwitcher switcher = apiInstance.getMenuFactory().createDefaultInventorySwitcher();
-        List<MenuTemplate> templates = initManySingleTemplates(switcher);
+        List<MenuTemplate> templates = initManySingleTemplates();
         paginatedMenuTemplate = apiInstance
                 .templateBuilder()
                 .paginatedTemplate()
                 .setMainPage(templates.get(0))
-                .setInventorySwitcher(switcher)
                 .setPages(templates)
                 .build();
     }
 
-    private List<MenuTemplate> initManySingleTemplates(InventorySwitcher inventorySwitcher) {
+    private List<MenuTemplate> initManySingleTemplates() {
         List<MenuTemplate> templates = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
-            templates.add(createOneFromPaginatedTemplate(inventorySwitcher));
+            templates.add(createOneFromPaginatedTemplate());
         }
         return templates;
     }
 
-    private MenuTemplate createOneFromPaginatedTemplate(InventorySwitcher inventorySwitcher) {
+    private MenuTemplate createOneFromPaginatedTemplate() {
         return apiInstance
                 .templateBuilder()
                 .singleTemplate()
@@ -64,7 +62,7 @@ public class SightMenuExamplePlugin extends JavaPlugin implements Listener {
                                 .cachedItem()
                                 .withClickListener(menuItemClick -> {
                                     menuItemClick.getPlayer().sendMessage("О следующая страница");
-                                    inventorySwitcher.switchNext();
+                                    menuItemClick.getSession().sendHeader(MenuHeaders.SWITCH_NEXT_PAGE);
                                 })
                                 .setMenuIcon(new MenuIcon(new ItemStack(Material.STONE), 5))
                                 .build()
@@ -74,7 +72,7 @@ public class SightMenuExamplePlugin extends JavaPlugin implements Listener {
                                 .perPlayerItem()
                                 .withClickListener(menuItemClick -> {
                                     menuItemClick.getPlayer().sendMessage("Назад в будущее нахуй, го?");
-                                    inventorySwitcher.switchPrevious();
+                                    menuItemClick.getSession().sendHeader(MenuHeaders.SWITCH_PREVIOUS_PAGE);
                                 })
                                 .setIconRequestConsumer(iconRequest -> new MenuIcon(new ItemStack(Material.BED), 7))
                                 .build()
