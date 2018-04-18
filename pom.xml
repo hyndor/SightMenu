@@ -27,6 +27,10 @@
         </dependency>
     </dependencies>
 
+    <properties>
+        <pl.bukkit.dir>plugins</pl.bukkit.dir>
+    </properties>
+
     <build>
         <plugins>
             <plugin>

@@ -7,8 +7,16 @@ import java.util.Optional;
 
 public interface SessionResolver {
 
+    /**
+     * @param menuTemplate template to search
+     * @return all sessions with such template
+     */
     Collection<MenuSession> findAllByTemplate(MenuTemplate menuTemplate);
 
+    /**
+     * @param player sesion owner
+     * @return empty if inventory isn't opened
+     */
     Optional<MenuSession> getSession(Player player);
 
 }

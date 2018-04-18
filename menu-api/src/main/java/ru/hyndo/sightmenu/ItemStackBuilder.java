@@ -18,14 +18,22 @@ public class ItemStackBuilder {
 
     private final ItemStack itemStack;
 
-    ItemStackBuilder() {
-        itemStack = new ItemStack(Material.QUARTZ);
+    private ItemStackBuilder() {
+        itemStack = new ItemStack(Material.STONE);
         setName("");
-        setLore(new ArrayList<String>());
+        setLore(new ArrayList<>());
     }
 
-    public ItemStackBuilder(ItemStack itemStack) {
+    private ItemStackBuilder(ItemStack itemStack) {
         this.itemStack = itemStack;
+    }
+
+    public static ItemStackBuilder create() {
+        return new ItemStackBuilder();
+    }
+
+    public static ItemStackBuilder create(ItemStack stack) {
+        return new ItemStackBuilder(stack);
     }
 
     public ItemStackBuilder setItemMeta(ItemMeta meta) {
