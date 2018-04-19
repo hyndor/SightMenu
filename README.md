@@ -3,7 +3,7 @@ That menu api allows you to easily implement your own custom menus in human-read
 
 
 **Examples:**
-  *You can check separated module [**example**](https://github.com/hyndor/SightMenu/tree/master/example/src/main/java/ru/hyndo/signmenu/example) to get basis understanding of api.*
+  *You can check separated module [**example**](https://github.com/hyndor/SightMenu/tree/master/example/src/main/java/ru/hyndo/signmenu/example) to get basiс understanding of api.*
 #
 
 **Features:**
