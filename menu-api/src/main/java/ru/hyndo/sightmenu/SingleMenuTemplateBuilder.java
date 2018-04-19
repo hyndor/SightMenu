@@ -11,7 +11,6 @@ public class SingleMenuTemplateBuilder {
     private List<MenuItem> items = new ArrayList<>();
     private int rows = 6;
     private MenuOpenProcessor openProcessor = MenuOpenProcessors.standardOpen();
-    private Consumer<Map<String, Object>> headerConsumer = map -> {};
 
     SingleMenuTemplateBuilder() {
     }
@@ -19,12 +18,6 @@ public class SingleMenuTemplateBuilder {
     public SingleMenuTemplateBuilder setName(String name) {
         Preconditions.checkNotNull(name, "Null name");
         this.name = name;
-        return this;
-    }
-
-    public SingleMenuTemplateBuilder withHeaderConsumer(Consumer<Map<String, Object>> headerConsumer) {
-        Preconditions.checkNotNull(name, "Null consumer");
-        this.headerConsumer = headerConsumer.andThen(headerConsumer);
         return this;
     }
 
@@ -53,6 +46,6 @@ public class SingleMenuTemplateBuilder {
     }
 
     public MenuTemplate createMenuTemplateImpl() {
-        return new ImmutableMenuTemplate(name, items, rows, openProcessor, headerConsumer);
+        return new ImmutableMenuTemplate(name, items, rows, openProcessor);
     }
 }

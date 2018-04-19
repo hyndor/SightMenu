@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
-public class SessionResolverImpl implements SessionResolver, Listener {
+public class SessionResolverImpl implements SessionResolver {
 
 
     private Multimap<MenuTemplate, MenuSession> activeSessionsByTemplates = HashMultimap.create();
@@ -32,10 +32,6 @@ public class SessionResolverImpl implements SessionResolver, Listener {
     }
 
 
-    @EventHandler
-    public void onNewSessionCreate() {
-
-    }
 
     void addNewSession(MenuSession session) {
         activeSessionsByTemplates.put(session.getTemplate(), session);

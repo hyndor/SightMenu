@@ -31,7 +31,7 @@ public class MenuItemBuilder {
 
         public AbstractMenuItemBuilder withClickListener(Consumer<MenuItemClick> onClick) {
             Preconditions.checkNotNull(onClick, "onClick is null");
-            this.onClick = onClick.andThen(onClick);
+            this.onClick = this.onClick.andThen(onClick);
             return this;
         }
 

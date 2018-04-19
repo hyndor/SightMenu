@@ -9,8 +9,6 @@ public class MenuApiInstance {
     private MenuFactory menuFactory;
     private JavaPlugin plugin;
     private SessionResolver sessionResolver;
-    private MenuTemplateBuilder menuTemplateBuilder;
-    private MenuItemBuilder itemBuilder;
 
     MenuApiInstance(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -18,13 +16,11 @@ public class MenuApiInstance {
         MenuListener menuListener = new MenuListener(sessionResolver);
         Bukkit.getPluginManager().registerEvents(menuListener, plugin);
         this.menuFactory = new MenuFactoryImpl(sessionResolver);
-        this.menuTemplateBuilder = new MenuTemplateBuilder();
         this.sessionResolver = sessionResolver;
-        this.itemBuilder = new MenuItemBuilder();
     }
 
     public MenuTemplateBuilder templateBuilder() {
-        return menuTemplateBuilder;
+        return new MenuTemplateBuilder();
     }
 
     public SessionResolver getSessionResolver() {
@@ -36,10 +32,11 @@ public class MenuApiInstance {
     }
 
     public MenuItemBuilder itemBuilder() {
-        return itemBuilder;
+        return new MenuItemBuilder();
     }
 
     public JavaPlugin getPlugin() {
         return plugin;
     }
+
 }

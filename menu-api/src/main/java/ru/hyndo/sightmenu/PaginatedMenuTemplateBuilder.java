@@ -1,15 +1,17 @@
 package ru.hyndo.sightmenu;
 
 import com.google.common.base.Preconditions;
+import org.bukkit.inventory.Inventory;
 import ru.hyndo.sightmenu.paginated.PaginatedMenuTemplate;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 public class PaginatedMenuTemplateBuilder {
 
     private MenuTemplate mainPage;
     private List<MenuTemplate> pages;
-    private InventorySwitcher inventorySwitcher;
+    private Supplier<InventorySwitcher> inventorySwitcher = InventorySwitcherImpl::new;
 
     PaginatedMenuTemplateBuilder() {
     }
@@ -26,17 +28,16 @@ public class PaginatedMenuTemplateBuilder {
         return this;
     }
 
-    public PaginatedMenuTemplateBuilder setInventorySwitcher(InventorySwitcher inventorySwitcher) {
+    public PaginatedMenuTemplateBuilder setInventorySwitcherFactory(Supplier<InventorySwitcher> factory) {
         Preconditions.checkNotNull(inventorySwitcher, "inventorySwitcher is null");
-        this.inventorySwitcher = inventorySwitcher;
+        this.inventorySwitcher = factory;
         return this;
     }
 
     public PaginatedMenuTemplate build() {
-        Preconditions.checkNotNull(mainPage, "Trying build paginated menu template with null main page");
-        Preconditions.checkNotNull(pages, "Trying build paginated menu template with null page list");
-        Preconditions.checkNotNull(inventorySwitcher, "Trying build paginated menu template with null inventory switcher");
-        Preconditions.checkState(!pages.isEmpty(), "Trying build paginated menu template with empty page list");
+        Preconditions.checkNotNull(mainPage, "Trying to build paginated menu template with null main page");
+        Preconditions.checkNotNull(pages, "Trying to build paginated menu template with null page list");
+        Preconditions.checkState(!pages.isEmpty(), "Trying to build paginated menu template with empty page list");
         return new PaginatedMenuTemplateImpl(mainPage, pages, inventorySwitcher);
     }
 }

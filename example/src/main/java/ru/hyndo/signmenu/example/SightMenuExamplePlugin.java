@@ -74,7 +74,26 @@ public class SightMenuExamplePlugin extends JavaPlugin implements Listener {
                                     menuItemClick.getPlayer().sendMessage("Назад в будущее нахуй, го?");
                                     menuItemClick.getSession().sendHeader(MenuHeaders.SWITCH_PREVIOUS_PAGE);
                                 })
-                                .setIconRequestConsumer(iconRequest -> new MenuIcon(new ItemStack(Material.BED), 7))
+                                .setIconRequestConsumer(iconRequest -> new MenuIcon(new ItemStack(Material.BED), 8))
+                                .build()
+                )
+                .withItem(
+                        apiInstance.itemBuilder()
+                                .cachedItem()
+                                .withClickListener(menuItemClick -> {
+                                    menuItemClick.getPlayer().sendMessage("Switching to fifth page");
+                                    menuItemClick.getSession().sendHeader(MenuHeaders.switchToPage(6));
+                                })
+                                .setMenuIcon(new MenuIcon(new ItemStack(Material.STONE), 6))
+                                .build()
+                )
+                .withItem(
+                        apiInstance.itemBuilder()
+                                .perPlayerItem()
+                                .setIconRequestConsumer(iconRequest -> new MenuIcon(ItemStackBuilder.create()
+                                        .setMaterial(Material.ANVIL)
+                                        .addBlankLore()
+                                        .addLore("Your name: " + iconRequest.getPlayer().getName()).build(), 7))
                                 .build()
                 )
                 .createMenuTemplateImpl();

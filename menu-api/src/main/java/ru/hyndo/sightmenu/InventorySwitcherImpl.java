@@ -33,18 +33,26 @@ class InventorySwitcherImpl implements InventorySwitcher {
     @Override
     public boolean hasPrevious() {
         int newIndex = currentPageGlobalIndex - 1;
-        return session.getTemplate().allPages().size() > newIndex;
+        return session.getTemplate().allPages().size() > newIndex && newIndex >= 0;
     }
 
     @Override
     public boolean hasNext() {
         int newIndex = currentPageGlobalIndex + 1;
-        return session.getTemplate().allPages().size() > newIndex;
+        return session
+                .getTemplate()
+                .allPages()
+                .size() > newIndex;
+    }
+
+    @Override
+    public boolean hasPage(int pageIndex) {
+        return session.getTemplate().allPages().size() > pageIndex;
     }
 
     @Override
     public MenuSession switchToPage(int pageIndex) throws IllegalArgumentException {
-        if(session.getTemplate().allPages().size() > pageIndex) {
+        if(session.getTemplate().allPages().size() <= pageIndex) {
             throw new IndexOutOfBoundsException("Unknown page");
         }
         this.currentPageGlobalIndex = pageIndex;
@@ -61,6 +69,11 @@ class InventorySwitcherImpl implements InventorySwitcher {
     public void bindToSession(PaginatedMenuSession menuSession) {
         Preconditions.checkState(this.session == null, "Trying to bind session to already binned inventory switcher. Try to create new instance of inventory switcher.");
         setSession(menuSession);
+    }
+
+    @Override
+    public int currentPageIndex() {
+        return currentPageGlobalIndex;
     }
 
     void setSession(PaginatedMenuSession session) {

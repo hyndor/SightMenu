@@ -23,22 +23,44 @@ public class PaginatedMenuSessionImpl implements PaginatedMenuSession, Consumer<
         this.owner = owner;
         this.template = template;
         this.menuFactory = menuFactory;
-        if(!template.switcher().getBoundSession().isPresent()) {
-            template.switcher().bindToSession(this);
+        InventorySwitcher switcher = template.switcher();
+        if(!switcher.getBoundSession().isPresent()) {
+            switcher.bindToSession(this);
         } else {
-            PaginatedMenuSession boundTo = template.switcher().getBoundSession().get();
+            PaginatedMenuSession boundTo = switcher.getBoundSession().get();
             if(boundTo != this) {
                 throw new IllegalArgumentException("Got menu switcher already bound to another session");
             }
         }
+        this.switcher = switcher;
 
-        headerHandlers.put(MenuHeaders.SWITCH_NEXT_PAGE_NAME, (a, b) -> switcher.switchNext());
-        headerHandlers.put(MenuHeaders.SWITCH_PREVIOUS_PAGE_NAME, (a, b) -> switcher.switchPrevious());
+        headerHandlers.put(MenuHeaders.SWITCH_NEXT_PAGE_NAME, (a, b) -> {
+            if(!this.switcher.hasNext()) {
+                return;
+            }
+            MenuSession menuSession = this.switcher.switchNext();
+            menuSession.addHeaderConsumer(this);
+        });
+        headerHandlers.put(MenuHeaders.SWITCH_PREVIOUS_PAGE_NAME, (a, b) -> {
+            if(!this.switcher.hasPrevious()) {
+                return;
+            }
+            MenuSession menuSession = this.switcher.switchPrevious();
+            menuSession.addHeaderConsumer(this);
+        });
         headerHandlers.put(MenuHeaders.SWITCH_TO_PAGE_NUMBER, (str, page) -> {
             if(!(page instanceof Integer)) {
-                throw new IllegalArgumentException("Received invalid header SWITCH_TO_PAGE_NUMBER. Expected integer, instead got " + page.getClass().getSimpleName());
+                throw new IllegalArgumentException(
+                        "Received invalid header SWITCH_TO_PAGE_NUMBER. Expected integer, instead got "
+                                + page.getClass().getSimpleName()
+                );
             }
-            switcher.switchToPage((Integer) page);
+            int pageInt = (int) page;
+            if(!this.switcher.hasPage(pageInt)) {
+                return;
+            }
+            MenuSession menuSession = this.switcher.switchToPage(pageInt);
+            menuSession.addHeaderConsumer(this);
         });
         MenuSession singleSession = menuFactory.createSingleSession(owner, template.mainPage());
         singleSession.addHeaderConsumer(this);

@@ -7,14 +7,15 @@ import ru.hyndo.sightmenu.paginated.PaginatedMenuTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class PaginatedMenuTemplateImpl implements PaginatedMenuTemplate {
 
     private MenuTemplate mainTemplate;
     private List<MenuTemplate> pages;
-    private InventorySwitcher inventorySwitcher;
+    private Supplier<InventorySwitcher> inventorySwitcher;
 
-    PaginatedMenuTemplateImpl(MenuTemplate mainTemplate, List<MenuTemplate> pages, InventorySwitcher inventorySwitcher) {
+    PaginatedMenuTemplateImpl(MenuTemplate mainTemplate, List<MenuTemplate> pages, Supplier<InventorySwitcher> inventorySwitcher) {
         this.mainTemplate = mainTemplate;
         this.pages = pages;
         this.inventorySwitcher = inventorySwitcher;
@@ -32,7 +33,7 @@ public class PaginatedMenuTemplateImpl implements PaginatedMenuTemplate {
 
     @Override
     public InventorySwitcher switcher() {
-        return inventorySwitcher;
+        return inventorySwitcher.get();
     }
 
     @Override

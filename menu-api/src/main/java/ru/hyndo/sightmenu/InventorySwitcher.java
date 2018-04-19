@@ -14,10 +14,14 @@ public interface InventorySwitcher {
 
     boolean hasNext();
 
+    boolean hasPage(int pageIndex);
+
     MenuSession switchToPage(int pageIndex) throws IllegalArgumentException;
 
     Optional<PaginatedMenuSession> getBoundSession();
 
     void bindToSession(PaginatedMenuSession menuSession);
+
+    int currentPageIndex();
 
 }

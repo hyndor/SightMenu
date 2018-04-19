@@ -20,7 +20,7 @@ public class MenuHeaders {
 
     public static Map<String, Object> switchToPage(int page) {
         return ImmutableMap.<String, Object>builder()
-                .put(SWITCH_TO_PAGE_NUMBER, new byte[0]).build();
+                .put(SWITCH_TO_PAGE_NUMBER, page).build();
     }
 
 }

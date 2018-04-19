@@ -14,7 +14,7 @@ public interface SessionResolver {
     Collection<MenuSession> findAllByTemplate(MenuTemplate menuTemplate);
 
     /**
-     * @param player sesion owner
+     * @param player session owner
      * @return empty if inventory isn't opened
      */
     Optional<MenuSession> getSession(Player player);
