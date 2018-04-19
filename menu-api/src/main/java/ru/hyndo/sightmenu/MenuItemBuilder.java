@@ -1,12 +1,10 @@
 package ru.hyndo.sightmenu;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.MultimapBuilder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import ru.hyndo.sightmenu.item.IconRequest;
 import ru.hyndo.sightmenu.item.MenuIcon;
-import ru.hyndo.sightmenu.item.MenuItem;
 import ru.hyndo.sightmenu.item.MenuItemClick;
 
 import java.util.function.Consumer;

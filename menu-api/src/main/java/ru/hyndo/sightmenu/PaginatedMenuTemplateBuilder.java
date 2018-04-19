@@ -1,7 +1,6 @@
 package ru.hyndo.sightmenu;
 
 import com.google.common.base.Preconditions;
-import org.bukkit.inventory.Inventory;
 import ru.hyndo.sightmenu.paginated.PaginatedMenuTemplate;
 
 import java.util.List;

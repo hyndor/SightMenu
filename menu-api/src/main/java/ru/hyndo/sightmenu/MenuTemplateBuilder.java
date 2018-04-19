@@ -1,7 +1,5 @@
 package ru.hyndo.sightmenu;
 
-import com.google.common.collect.MultimapBuilder;
-
 public class MenuTemplateBuilder {
 
     MenuTemplateBuilder() {

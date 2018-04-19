@@ -3,7 +3,6 @@ package ru.hyndo.sightmenu;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Map;
-import java.util.function.Consumer;
 
 public class MenuHeaders {
 

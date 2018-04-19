@@ -7,12 +7,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import ru.hyndo.sightmenu.*;
+import ru.hyndo.sightmenu.MenuApi;
+import ru.hyndo.sightmenu.MenuApiInstance;
+import ru.hyndo.sightmenu.MenuOpenProcessors;
+import ru.hyndo.sightmenu.MenuTemplate;
 import ru.hyndo.sightmenu.item.MenuIcon;
 import ru.hyndo.sightmenu.paginated.PaginatedMenuTemplate;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class SightMenuExamplePlugin extends JavaPlugin implements Listener {
 

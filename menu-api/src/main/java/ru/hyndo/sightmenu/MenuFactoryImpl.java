@@ -1,7 +1,6 @@
 package ru.hyndo.sightmenu;
 
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import ru.hyndo.sightmenu.paginated.PaginatedMenuSession;
 import ru.hyndo.sightmenu.paginated.PaginatedMenuTemplate;

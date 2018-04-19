@@ -1,12 +1,12 @@
 package ru.hyndo.sightmenu;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import ru.hyndo.sightmenu.item.MenuItem;
 
 import javax.annotation.Nonnull;
-import java.util.*;
-import java.util.function.Consumer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class MenuTemplateImpl implements MenuTemplate {
 

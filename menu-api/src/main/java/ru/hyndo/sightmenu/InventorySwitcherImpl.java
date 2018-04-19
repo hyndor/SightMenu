@@ -1,7 +1,6 @@
 package ru.hyndo.sightmenu;
 
 import com.google.common.base.Preconditions;
-import ru.hyndo.sightmenu.MenuSession;
 import ru.hyndo.sightmenu.paginated.PaginatedMenuSession;
 import ru.hyndo.sightmenu.paginated.PaginatedMenuTemplate;
 

@@ -7,8 +7,8 @@ import ru.hyndo.sightmenu.item.MenuIcon;
 import ru.hyndo.sightmenu.item.MenuItem;
 
 import java.util.HashMap;
-import java.util.function.Consumer;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import static ru.hyndo.sightmenu.util.ColorUtil.color;
 

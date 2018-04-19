@@ -5,7 +5,6 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import ru.hyndo.sightmenu.paginated.PaginatedMenuTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 

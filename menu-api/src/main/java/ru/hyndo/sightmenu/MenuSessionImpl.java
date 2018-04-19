@@ -1,15 +1,13 @@
 package ru.hyndo.sightmenu;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import ru.hyndo.sightmenu.item.MenuItem;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public class MenuSessionImpl implements MenuSession {

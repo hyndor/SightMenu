@@ -4,7 +4,6 @@ import ru.hyndo.sightmenu.item.IconRequest;
 import ru.hyndo.sightmenu.item.MenuIcon;
 import ru.hyndo.sightmenu.item.MenuItemClick;
 
-import javax.swing.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 

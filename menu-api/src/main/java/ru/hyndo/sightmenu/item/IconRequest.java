@@ -1,7 +1,6 @@
 package ru.hyndo.sightmenu.item;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import ru.hyndo.sightmenu.MenuSession;
 
 public class IconRequest {

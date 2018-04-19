@@ -3,7 +3,10 @@ package ru.hyndo.sightmenu;
 import com.google.common.base.Preconditions;
 import ru.hyndo.sightmenu.item.MenuItem;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 public class SingleMenuTemplateBuilder {
     private String name = "SightMenu";

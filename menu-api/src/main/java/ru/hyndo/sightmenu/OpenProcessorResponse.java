@@ -3,7 +3,6 @@ package ru.hyndo.sightmenu;
 import org.bukkit.inventory.Inventory;
 import ru.hyndo.sightmenu.item.MenuItem;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class OpenProcessorResponse {
