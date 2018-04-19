@@ -10,6 +10,7 @@ That menu api allows you to easily implement your own custom menus in human-read
   * Builder pattern everywhere for creating a menu
   * Api uses java's functional interfaces for listening button clicks
   * Easy pagination
+  * Menu tracking
   * Menu Templates
   * Null safety with optional and javax annotation @Nullable/@Nonnull
   * And... Some more features that I don't remember

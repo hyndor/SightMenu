@@ -30,7 +30,9 @@ public class SightMenuExamplePlugin extends JavaPlugin implements Listener {
         initSingleTemplate();
     }
 
+
     private void initSingleTemplate() {
+
         template = apiInstance
                 .templateBuilder()
                 .singleTemplate()
