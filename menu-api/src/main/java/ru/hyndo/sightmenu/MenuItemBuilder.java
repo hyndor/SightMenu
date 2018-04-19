@@ -2,6 +2,7 @@ package ru.hyndo.sightmenu;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.MultimapBuilder;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import ru.hyndo.sightmenu.item.IconRequest;
 import ru.hyndo.sightmenu.item.MenuIcon;
@@ -64,7 +65,7 @@ public class MenuItemBuilder {
 
     public static class CachedMenuItemBuilder extends AbstractMenuItemBuilder {
 
-        private MenuIcon menuIcon;
+        private MenuIcon menuIcon = new MenuIcon(new ItemStack(Material.AIR), 0);
 
         CachedMenuItemBuilder() {
         }

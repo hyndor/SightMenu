@@ -45,7 +45,8 @@ public class PaginatedExample {
                 .setOpenProcessor(MenuOpenProcessors.standardOpen())
                 .setRows(5)
                 .withItem(
-                        apiInstance.itemBuilder()
+                        apiInstance
+                                .itemBuilder()
                                 .cachedItem()
                                 .withClickListener(menuItemClick -> {
                                     menuItemClick.getPlayer().sendMessage("О следующая страница");

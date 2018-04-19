@@ -8,14 +8,14 @@ import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class ImmutableMenuTemplate implements MenuTemplate {
+public class MenuTemplateImpl implements MenuTemplate {
 
     private String name;
     private List<MenuItem> indexes;
     private int rows;
     private MenuOpenProcessor openProcessor;
 
-    ImmutableMenuTemplate(String name, List<MenuItem> indexes, int rows, MenuOpenProcessor openProcessor) {
+    MenuTemplateImpl(String name, List<MenuItem> indexes, int rows, MenuOpenProcessor openProcessor) {
         this.name = name;
         this.indexes = new ArrayList<>(indexes);
         this.rows = rows;

@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import ru.hyndo.sightmenu.item.MenuItem;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 public class SingleMenuTemplateBuilder {
     private String name = "SightMenu";
@@ -46,6 +45,6 @@ public class SingleMenuTemplateBuilder {
     }
 
     public MenuTemplate createMenuTemplateImpl() {
-        return new ImmutableMenuTemplate(name, items, rows, openProcessor);
+        return new MenuTemplateImpl(name, items, rows, openProcessor);
     }
 }
