@@ -25,6 +25,7 @@ public final class MenuFactoryImpl implements MenuFactory {
         return new PaginatedMenuSessionImpl(player, menuTemplate, this);
     }
 
+    @Override
     public InventorySwitcher createDefaultInventorySwitcher() {
         return new InventorySwitcherImpl();
     }
