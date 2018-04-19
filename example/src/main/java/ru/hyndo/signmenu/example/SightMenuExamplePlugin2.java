@@ -5,22 +5,17 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import ru.hyndo.sightmenu.MenuApi;
-import ru.hyndo.sightmenu.MenuApiInstance;
-import ru.hyndo.sightmenu.MenuOpenProcessors;
-import ru.hyndo.sightmenu.MenuTemplate;
+import ru.hyndo.sightmenu.*;
 import ru.hyndo.sightmenu.item.MenuIcon;
 import ru.hyndo.sightmenu.paginated.PaginatedMenuTemplate;
 
-public class SightMenuExamplePlugin extends JavaPlugin implements Listener {
+public class SightMenuExamplePlugin2 extends JavaPlugin implements Listener {
 
-
-    private MenuApiInstance apiInstance;
-    private MenuTemplate template;
 
     protected PaginatedMenuTemplate paginatedMenuTemplate;
+    private MenuApiInstance apiInstance;
+    private MenuTemplate template;
 
     @Override
     public void onEnable() {
@@ -32,7 +27,8 @@ public class SightMenuExamplePlugin extends JavaPlugin implements Listener {
 
 
     private void initSingleTemplate() {
-        template = apiInstance
+
+        MenuTemplate template = apiInstance
                 .templateBuilder()
                 .singleTemplate()
                 .setName("Cool menu name")
@@ -40,16 +36,24 @@ public class SightMenuExamplePlugin extends JavaPlugin implements Listener {
                 .setRows(5)
                 .withItem(
                         apiInstance.itemBuilder()
-                                .cachedItem()
-                                .withClickListener(menuItemClick -> menuItemClick.getPlayer().sendMessage("Ohh. That's a click"))
-                                .setMenuIcon(new MenuIcon(new ItemStack(Material.STONE), 5))
+                                .perPlayerItem()
+                                .withClickListener(menuItemClick -> menuItemClick.getPlayer().sendMessage("You have clicked! Congratulations"))
+                                .withClickListener(menuItemClick -> menuItemClick.getPlayer().sendMessage("Yeah. You can specify as many click listeners as you want"))
+                                .setIconRequestConsumer(iconRequest -> new MenuIcon(ItemStackBuilder.create()
+                                        .setMaterial(Material.STONE)
+                                        .addBlankLore()
+                                        .addLore("Your name: " + iconRequest.getPlayer().getName())
+                                        .build(), 5)
+                                )
                                 .build()
                 )
                 .withItem(
                         apiInstance.itemBuilder()
-                                .perPlayerItem()
-                                .withClickListener(menuItemClick -> menuItemClick.getPlayer().sendMessage("Your name: " + menuItemClick.getPlayer().getName()))
-                                .setIconRequestConsumer(iconRequest -> new MenuIcon(new ItemStack(Material.BED), 4))
+                                .cachedItem()
+                                .setMenuIcon(new MenuIcon(ItemStackBuilder.create()
+                                        .setMaterial(Material.STONE)
+                                        .build(), 6)
+                                )
                                 .build()
                 )
                 .createMenuTemplateImpl();
@@ -58,9 +62,9 @@ public class SightMenuExamplePlugin extends JavaPlugin implements Listener {
     @EventHandler
     public void onJoin(AsyncPlayerChatEvent event) {
         String message = event.getMessage();
-        if(message.equalsIgnoreCase("single")) {
+        if (message.equalsIgnoreCase("single")) {
             apiInstance.getMenuFactory().createSingleSession(event.getPlayer(), template);
-        } else if(message.equalsIgnoreCase("paginated")) {
+        } else if (message.equalsIgnoreCase("paginated")) {
             apiInstance.getMenuFactory().createPaginatedSession(event.getPlayer(), paginatedMenuTemplate);
         }
     }

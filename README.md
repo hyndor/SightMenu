@@ -2,11 +2,12 @@
 That menu api allows you to easily implement your own custom menus in human-readable way.
 
 
-**Examples:**
-  *You can check separated module [**example**](https://github.com/hyndor/SightMenu/tree/master/example/src/main/java/ru/hyndo/signmenu/example) to get basiс understanding of api.*
+## **Examples:**
+  * *You can check **[wiki page](https://github.com/hyndor/SightMenu/wiki)** to get a deep understanding of how api works*
+  * *You can check separated module [**example**](https://github.com/hyndor/SightMenu/tree/master/example/src/main/java/ru/hyndo/signmenu/example) to get basiс understanding of api.*
 #
 
-**Features:**
+### **Features:**
   * Builder pattern everywhere for creating a menu
   * Api uses java's functional interfaces for listening button clicks
   * Easy pagination
