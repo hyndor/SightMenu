@@ -15,6 +15,7 @@ import ru.hyndo.sightmenu.paginated.PaginatedMenuTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.*;
@@ -58,6 +59,8 @@ public class InventorySwitcherImplTest {
         assertEquals(paginatedSession.getSwitcher().currentPageIndex(), 6);
         paginatedSession.getSwitcher().switchToPage(1);
         assertEquals(paginatedSession.getSwitcher().currentPageIndex(), 1);
+        Optional<MenuSession> session = apiInstance.getSessionResolver().getSession(vasya);
+        assertTrue(session.isPresent());
         paginatedSession.getSwitcher().switchPrevious();
         paginatedSession.getSwitcher().switchPrevious();
     }

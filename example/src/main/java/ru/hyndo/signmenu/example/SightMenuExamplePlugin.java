@@ -20,83 +20,14 @@ public class SightMenuExamplePlugin extends JavaPlugin implements Listener {
     private MenuApiInstance apiInstance;
     private MenuTemplate template;
 
-    private PaginatedMenuTemplate paginatedMenuTemplate;
-
-    private static int count = 0;
+    protected PaginatedMenuTemplate paginatedMenuTemplate;
 
     @Override
     public void onEnable() {
         apiInstance = MenuApi.prepare(this);
         Bukkit.getPluginManager().registerEvents(this, this);
-        initPaginatedTemplate();
+        paginatedMenuTemplate = new PaginatedExample(apiInstance).initPaginatedTemplate();
         initSingleTemplate();
-    }
-
-    private void initPaginatedTemplate() {
-        List<MenuTemplate> templates = initManySingleTemplates();
-        paginatedMenuTemplate = apiInstance
-                .templateBuilder()
-                .paginatedTemplate()
-                .setMainPage(templates.get(0))
-                .setPages(templates)
-                .build();
-    }
-
-    private List<MenuTemplate> initManySingleTemplates() {
-        List<MenuTemplate> templates = new ArrayList<>();
-        for (int i = 0; i < 7; i++) {
-            templates.add(createOneFromPaginatedTemplate());
-        }
-        return templates;
-    }
-
-    private MenuTemplate createOneFromPaginatedTemplate() {
-        return apiInstance
-                .templateBuilder()
-                .singleTemplate()
-                .setName("Страница " + count++)
-                .setOpenProcessor(MenuOpenProcessors.standardOpen())
-                .setRows(5)
-                .withItem(
-                        apiInstance.itemBuilder()
-                                .cachedItem()
-                                .withClickListener(menuItemClick -> {
-                                    menuItemClick.getPlayer().sendMessage("О следующая страница");
-                                    menuItemClick.getSession().sendHeader(MenuHeaders.SWITCH_NEXT_PAGE);
-                                })
-                                .setMenuIcon(new MenuIcon(new ItemStack(Material.STONE), 5))
-                                .build()
-                )
-                .withItem(
-                        apiInstance.itemBuilder()
-                                .perPlayerItem()
-                                .withClickListener(menuItemClick -> {
-                                    menuItemClick.getPlayer().sendMessage("Назад в будущее нахуй, го?");
-                                    menuItemClick.getSession().sendHeader(MenuHeaders.SWITCH_PREVIOUS_PAGE);
-                                })
-                                .setIconRequestConsumer(iconRequest -> new MenuIcon(new ItemStack(Material.BED), 8))
-                                .build()
-                )
-                .withItem(
-                        apiInstance.itemBuilder()
-                                .cachedItem()
-                                .withClickListener(menuItemClick -> {
-                                    menuItemClick.getPlayer().sendMessage("Switching to fifth page");
-                                    menuItemClick.getSession().sendHeader(MenuHeaders.switchToPage(6));
-                                })
-                                .setMenuIcon(new MenuIcon(new ItemStack(Material.STONE), 6))
-                                .build()
-                )
-                .withItem(
-                        apiInstance.itemBuilder()
-                                .perPlayerItem()
-                                .setIconRequestConsumer(iconRequest -> new MenuIcon(ItemStackBuilder.create()
-                                        .setMaterial(Material.ANVIL)
-                                        .addBlankLore()
-                                        .addLore("Your name: " + iconRequest.getPlayer().getName()).build(), 7))
-                                .build()
-                )
-                .createMenuTemplateImpl();
     }
 
     private void initSingleTemplate() {
