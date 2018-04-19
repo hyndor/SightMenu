@@ -49,7 +49,7 @@ public class PaginatedExample {
                                 .itemBuilder()
                                 .cachedItem()
                                 .withClickListener(menuItemClick -> {
-                                    menuItemClick.getPlayer().sendMessage("О следующая страница");
+                                    menuItemClick.getPlayer().sendMessage("We are going to the next page");
                                     menuItemClick.getSession().sendHeader(MenuHeaders.SWITCH_NEXT_PAGE);
                                 })
                                 .setMenuIcon(new MenuIcon(new ItemStack(Material.STONE), 5))
@@ -59,7 +59,7 @@ public class PaginatedExample {
                         apiInstance.itemBuilder()
                                 .perPlayerItem()
                                 .withClickListener(menuItemClick -> {
-                                    menuItemClick.getPlayer().sendMessage("Назад в будущее нахуй, го?");
+                                    menuItemClick.getPlayer().sendMessage("We are going to the previous page");
                                     menuItemClick.getSession().sendHeader(MenuHeaders.SWITCH_PREVIOUS_PAGE);
                                 })
                                 .setIconRequestConsumer(iconRequest -> new MenuIcon(new ItemStack(Material.BED), 8))

@@ -34,20 +34,20 @@ public class SightMenuExamplePlugin extends JavaPlugin implements Listener {
         template = apiInstance
                 .templateBuilder()
                 .singleTemplate()
-                .setName("Топ меню")
+                .setName("Cool menu name")
                 .setOpenProcessor(MenuOpenProcessors.standardOpen())
                 .setRows(5)
                 .withItem(
                         apiInstance.itemBuilder()
                                 .cachedItem()
-                                .withClickListener(menuItemClick -> menuItemClick.getPlayer().sendMessage("Епать ни встать ты кликнул"))
+                                .withClickListener(menuItemClick -> menuItemClick.getPlayer().sendMessage("Ohh. That's a click"))
                                 .setMenuIcon(new MenuIcon(new ItemStack(Material.STONE), 5))
                                 .build()
                 )
                 .withItem(
                         apiInstance.itemBuilder()
                                 .perPlayerItem()
-                                .withClickListener(menuItemClick -> menuItemClick.getPlayer().sendMessage("Твое имя " + menuItemClick.getPlayer().getName()))
+                                .withClickListener(menuItemClick -> menuItemClick.getPlayer().sendMessage("Your name: " + menuItemClick.getPlayer().getName()))
                                 .setIconRequestConsumer(iconRequest -> new MenuIcon(new ItemStack(Material.BED), 4))
                                 .build()
                 )
