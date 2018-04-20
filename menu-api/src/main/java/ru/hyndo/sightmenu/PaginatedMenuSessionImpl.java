@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public class PaginatedMenuSessionImpl implements PaginatedMenuSession, Consumer<Map<String, Object>> {
+class PaginatedMenuSessionImpl implements PaginatedMenuSession, Consumer<Map<String, Object>> {
 
     private Player owner;
     private PaginatedMenuTemplate template;

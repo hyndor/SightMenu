@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-public class MenuTemplateImpl implements MenuTemplate {
+class MenuTemplateImpl implements MenuTemplate {
 
     private String name;
     private List<MenuItem> indexes;

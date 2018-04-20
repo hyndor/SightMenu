@@ -8,7 +8,7 @@ import ru.hyndo.sightmenu.paginated.PaginatedMenuTemplate;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class PaginatedMenuTemplateImpl implements PaginatedMenuTemplate {
+class PaginatedMenuTemplateImpl implements PaginatedMenuTemplate {
 
     private MenuTemplate mainTemplate;
     private List<MenuTemplate> pages;
