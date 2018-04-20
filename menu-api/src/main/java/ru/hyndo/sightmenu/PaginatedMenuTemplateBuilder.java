@@ -3,13 +3,14 @@ package ru.hyndo.sightmenu;
 import com.google.common.base.Preconditions;
 import ru.hyndo.sightmenu.paginated.PaginatedMenuTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
 public class PaginatedMenuTemplateBuilder {
 
     private MenuTemplate mainPage;
-    private List<MenuTemplate> pages;
+    private List<MenuTemplate> pages = new ArrayList<>();
     private Supplier<InventorySwitcher> inventorySwitcher = InventorySwitcherImpl::new;
 
     PaginatedMenuTemplateBuilder() {
@@ -18,6 +19,12 @@ public class PaginatedMenuTemplateBuilder {
     public PaginatedMenuTemplateBuilder setMainPage(MenuTemplate mainPage) {
         Preconditions.checkNotNull(mainPage, "mainPage is null");
         this.mainPage = mainPage;
+        return this;
+    }
+
+    public PaginatedMenuTemplateBuilder withPage(MenuTemplate page) {
+        Preconditions.checkNotNull(page, "page is null");
+        this.pages.add(page);
         return this;
     }
 

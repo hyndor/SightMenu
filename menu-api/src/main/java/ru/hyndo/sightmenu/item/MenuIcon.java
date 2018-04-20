@@ -16,7 +16,7 @@ public class MenuIcon {
     }
 
     public ItemStack getItemStack() {
-        return itemStack;
+        return itemStack.clone();
     }
 
     public MenuIcon setItemStack(ItemStack itemStack) {

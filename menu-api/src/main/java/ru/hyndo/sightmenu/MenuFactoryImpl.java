@@ -22,7 +22,9 @@ public final class MenuFactoryImpl implements MenuFactory {
 
     @Override
     public PaginatedMenuSession createPaginatedSession(Player player, PaginatedMenuTemplate menuTemplate) {
-        return new PaginatedMenuSessionImpl(player, menuTemplate, this);
+        PaginatedMenuSessionImpl paginatedMenuSession = new PaginatedMenuSessionImpl(player, menuTemplate, this);
+        sessionResolver.addNewPaginatedSession(paginatedMenuSession);
+        return paginatedMenuSession;
     }
 
     @Override
