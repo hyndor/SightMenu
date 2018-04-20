@@ -23,13 +23,13 @@ class PaginatedMenuSessionImpl implements PaginatedMenuSession, Consumer<Map<Str
         this.owner = owner;
         this.template = template;
         this.menuFactory = menuFactory;
-        InventorySwitcher switcher = template.switcher();
+        InventorySwitcher switcher = template.switcherSupplier().get();
         if(!switcher.getBoundSession().isPresent()) {
             switcher.bindToSession(this);
         } else {
             PaginatedMenuSession boundTo = switcher.getBoundSession().get();
             if(boundTo != this) {
-                throw new IllegalArgumentException("Got menu switcher already bound to another session");
+                throw new IllegalArgumentException("Got menu switcherSupplier already bound to another session");
             }
         }
         this.switcher = switcher;

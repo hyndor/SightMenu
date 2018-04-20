@@ -4,6 +4,7 @@ import ru.hyndo.sightmenu.InventorySwitcher;
 import ru.hyndo.sightmenu.MenuTemplate;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 public interface PaginatedMenuTemplate {
 
@@ -11,6 +12,6 @@ public interface PaginatedMenuTemplate {
 
     List<MenuTemplate> allPages();
 
-    InventorySwitcher switcher();
+    Supplier<InventorySwitcher> switcherSupplier();
 
 }

@@ -66,7 +66,7 @@ class InventorySwitcherImpl implements InventorySwitcher {
 
     @Override
     public void bindToSession(PaginatedMenuSession menuSession) {
-        Preconditions.checkState(this.session == null, "Trying to bind session to already binned inventory switcher. Try to create new instance of inventory switcher.");
+        Preconditions.checkState(this.session == null, "Trying to bind session to already binned inventory switcherSupplier. Try to create new instance of inventory switcherSupplier.");
         setSession(menuSession);
     }
 

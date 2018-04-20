@@ -31,8 +31,8 @@ class PaginatedMenuTemplateImpl implements PaginatedMenuTemplate {
     }
 
     @Override
-    public InventorySwitcher switcher() {
-        return inventorySwitcher.get();
+    public Supplier<InventorySwitcher> switcherSupplier() {
+        return inventorySwitcher;
     }
 
     @Override
