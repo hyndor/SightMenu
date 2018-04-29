@@ -20,16 +20,12 @@ public class SightMenuExamplePlugin extends JavaPlugin implements Listener {
     private MenuApiInstance apiInstance;
     private MenuTemplate template;
 
-    protected PaginatedMenuTemplate paginatedMenuTemplate;
-
     @Override
     public void onEnable() {
         apiInstance = MenuApi.prepare(this);
         Bukkit.getPluginManager().registerEvents(this, this);
-        paginatedMenuTemplate = new PaginatedExample(apiInstance).initPaginatedTemplate();
         initSingleTemplate();
     }
-
 
     private void initSingleTemplate() {
         template = apiInstance
@@ -60,8 +56,6 @@ public class SightMenuExamplePlugin extends JavaPlugin implements Listener {
         String message = event.getMessage();
         if(message.equalsIgnoreCase("single")) {
             apiInstance.getMenuFactory().createSingleSession(event.getPlayer(), template);
-        } else if(message.equalsIgnoreCase("paginated")) {
-            apiInstance.getMenuFactory().createPaginatedSession(event.getPlayer(), paginatedMenuTemplate);
         }
     }
 }
