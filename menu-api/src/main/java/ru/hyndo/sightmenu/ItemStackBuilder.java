@@ -1,6 +1,7 @@
 package ru.hyndo.sightmenu;
 
 import com.google.common.collect.Lists;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -96,7 +97,7 @@ public class ItemStackBuilder {
         if (original == null) {
             original = new ArrayList<>();
         }
-        Collections.addAll(original, format(lore));
+        Collections.addAll(original, ColorUtil.format(lore));
         itemMeta.setLore(original);
         itemStack.setItemMeta(itemMeta);
         return this;
@@ -108,7 +109,7 @@ public class ItemStackBuilder {
         if (original == null) {
             original = new ArrayList<>();
         }
-        original.addAll(format(lore));
+        original.addAll(ColorUtil.format(lore));
         itemMeta.setLore(original);
         itemStack.setItemMeta(itemMeta);
         return this;
@@ -116,14 +117,14 @@ public class ItemStackBuilder {
 
     public ItemStackBuilder setLore(String... lore) {
         ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setLore(format(Lists.newArrayList(lore)));
+        itemMeta.setLore(ColorUtil.format(Lists.newArrayList(lore)));
         itemStack.setItemMeta(itemMeta);
         return this;
     }
 
     public ItemStackBuilder setLore(List<String> lore) {
         ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setLore(format(lore));
+        itemMeta.setLore(ColorUtil.format(lore));
         itemStack.setItemMeta(itemMeta);
         return this;
     }
@@ -132,13 +133,6 @@ public class ItemStackBuilder {
         return itemStack;
     }
 
-    public static String[] format(String[] strings) {
-        return format(Arrays.asList(strings)).toArray(new String[strings.length]);
-    }
-
-    public static List<String> format(List<String> strings) {
-        return strings.stream().map(ColorUtil::color).collect(Collectors.toList());
-    }
 
 
 }
