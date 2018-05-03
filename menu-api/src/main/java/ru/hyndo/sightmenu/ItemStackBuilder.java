@@ -2,7 +2,6 @@ package ru.hyndo.sightmenu;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.sun.istack.internal.Nullable;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -22,7 +21,7 @@ public class ItemStackBuilder {
     private int amount;
     private short data;
     private MaterialData materialData;
-    @Nullable private ItemStackItemMetaBuilder metaBuilder;
+    private ItemStackItemMetaBuilder metaBuilder;
     private Function<ItemStack, ItemMeta> itemMetaCreator = is -> {
         Preconditions.checkNotNull(is, "Null itemStack");
         if(metaBuilder != null) {
@@ -110,8 +109,8 @@ public class ItemStackBuilder {
     public static class ItemStackItemMetaBuilder {
 
         private ItemStackBuilder innerBuilder;
-        @Nullable private String name;
-        @Nullable private ItemMeta userMeta;
+        private String name;
+        private ItemMeta userMeta;
         private List<String> lore = new ArrayList<>();
         private List<ItemFlag> itemFlags = new ArrayList<>();
         private boolean unbreakable;
