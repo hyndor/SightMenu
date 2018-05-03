@@ -1,31 +1,48 @@
 package ru.hyndo.sightmenu;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import org.bukkit.Color;
+import com.sun.istack.internal.Nullable;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 import ru.hyndo.sightmenu.util.ColorUtil;
 
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.function.Function;
 
 import static ru.hyndo.sightmenu.util.ColorUtil.color;
 
 public class ItemStackBuilder {
 
-    private final ItemStack itemStack;
+    private Material material;
+    private int amount;
+    private short data;
+    private MaterialData materialData;
+    @Nullable private ItemStackItemMetaBuilder metaBuilder;
+    private Function<ItemStack, ItemMeta> itemMetaCreator = is -> {
+        Preconditions.checkNotNull(is, "Null itemStack");
+        if(metaBuilder != null) {
+            return metaBuilder.build(is);
+        }
+        return is.getItemMeta();
+    };
+    private Map<Enchantment, Integer> enchantments = new HashMap<>();
 
     private ItemStackBuilder() {
-        itemStack = new ItemStack(Material.STONE);
-        setName("");
-        setLore(new ArrayList<>());
+
     }
 
     private ItemStackBuilder(ItemStack itemStack) {
-        this.itemStack = itemStack;
+        this.material = itemStack.getType();
+        this.amount = itemStack.getAmount();
+        this.data = itemStack.getDurability();
+        this.materialData = itemStack.getData();
+        this.enchantments = itemStack.getEnchantments();
+
     }
 
     public static ItemStackBuilder create() {
@@ -36,102 +53,146 @@ public class ItemStackBuilder {
         return new ItemStackBuilder(stack);
     }
 
-    public ItemStackBuilder setItemMeta(ItemMeta meta) {
-        this.itemStack.setItemMeta(meta);
-        return this;
-    }
-
     public ItemStackBuilder setMaterial(Material material) {
-        itemStack.setType(material);
+        Preconditions.checkNotNull(material, "Null material");
+        this.material = material;
         return this;
     }
 
     public ItemStackBuilder changeAmount(int change) {
-        itemStack.setAmount(itemStack.getAmount() + change);
+        this.amount = change;
         return this;
     }
 
     public ItemStackBuilder setAmount(int amount) {
-        itemStack.setAmount(amount);
+        this.amount = amount;
         return this;
     }
 
     public ItemStackBuilder setData(short data) {
-        itemStack.setDurability(data);
+        this.data = data;
         return this;
     }
 
     public ItemStackBuilder setData(MaterialData data) {
-        itemStack.setData(data);
+        this.materialData = data;
         return this;
     }
 
     public ItemStackBuilder setEnchantments(Map<Enchantment, Integer> enchantments) {
-        for (Enchantment enchantment : itemStack.getEnchantments().keySet()) {
-            itemStack.removeEnchantment(enchantment);
-        }
-        itemStack.addUnsafeEnchantments(enchantments);
+        Preconditions.checkNotNull(enchantments, "Null enchantments");
+        this.enchantments = enchantments;
         return this;
     }
 
     public ItemStackBuilder addEnchantment(Enchantment enchantment, int level) {
-        itemStack.addUnsafeEnchantment(enchantment, level);
+        Preconditions.checkNotNull(enchantment, "Null enchantment");
+        enchantments.put(enchantment, level);
         return this;
     }
 
-    public ItemStackBuilder setName(String name) {
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setDisplayName(name.equals("") ? " " : color(name));
-        itemStack.setItemMeta(itemMeta);
-        return this;
-    }
-
-    public ItemStackBuilder addBlankLore() {
-        addLore(" ");
-        return this;
-    }
-
-    public ItemStackBuilder addLore(String... lore) {
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        List<String> original = itemMeta.getLore();
-        if (original == null) {
-            original = new ArrayList<>();
-        }
-        Collections.addAll(original, ColorUtil.format(lore));
-        itemMeta.setLore(original);
-        itemStack.setItemMeta(itemMeta);
-        return this;
-    }
-
-    public ItemStackBuilder addLore(List<String> lore) {
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        List<String> original = itemMeta.getLore();
-        if (original == null) {
-            original = new ArrayList<>();
-        }
-        original.addAll(ColorUtil.format(lore));
-        itemMeta.setLore(original);
-        itemStack.setItemMeta(itemMeta);
-        return this;
-    }
-
-    public ItemStackBuilder setLore(String... lore) {
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setLore(ColorUtil.format(Lists.newArrayList(lore)));
-        itemStack.setItemMeta(itemMeta);
-        return this;
-    }
-
-    public ItemStackBuilder setLore(List<String> lore) {
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setLore(ColorUtil.format(lore));
-        itemStack.setItemMeta(itemMeta);
-        return this;
+    public ItemStackItemMetaBuilder withItemMeta() {
+        ItemStackItemMetaBuilder metaBuilder = new ItemStackItemMetaBuilder(this);
+        this.metaBuilder = metaBuilder;
+        return metaBuilder;
     }
 
     public ItemStack build() {
+        ItemStack itemStack = new ItemStack(material, amount, data);
+        if(materialData != null) {
+            itemStack.setData(materialData);
+        }
+        itemStack.addEnchantments(enchantments);
+        itemStack.setItemMeta(itemMetaCreator.apply(itemStack));
         return itemStack;
     }
+
+    public static class ItemStackItemMetaBuilder {
+
+        private ItemStackBuilder innerBuilder;
+        @Nullable private String name;
+        @Nullable private ItemMeta userMeta;
+        private List<String> lore = new ArrayList<>();
+        private List<ItemFlag> itemFlags = new ArrayList<>();
+        private boolean unbreakable;
+
+        public ItemStackItemMetaBuilder(ItemStackBuilder innerBuilder) {
+            this.innerBuilder = innerBuilder;
+        }
+
+        public ItemStackItemMetaBuilder setItemMeta(ItemMeta meta) {
+            this.userMeta = meta;
+            return this;
+        }
+
+
+        public ItemStackItemMetaBuilder setName(String name) {
+            Preconditions.checkNotNull(name, "Null name");
+            this.name = color(name);
+            return this;
+        }
+
+        public ItemStackItemMetaBuilder addBlankLore() {
+            addLore(" ");
+            return this;
+        }
+
+        public ItemStackItemMetaBuilder addLore(String... lore) {
+            Preconditions.checkNotNull(lore, "Null lore");
+            addLore(Arrays.asList(lore));
+            return this;
+        }
+
+        public ItemStackItemMetaBuilder addLore(List<String> lore) {
+            Preconditions.checkNotNull(lore, "Null lore");
+            this.lore.addAll(ColorUtil.format(lore));
+            return this;
+        }
+
+        public ItemStackItemMetaBuilder setLore(String... lore) {
+            Preconditions.checkNotNull(lore, "Null lore");
+            this.lore = Lists.newArrayList(ColorUtil.format(lore));
+            return this;
+        }
+
+        public ItemStackItemMetaBuilder setLore(List<String> lore) {
+            Preconditions.checkNotNull(lore, "Null lore");
+            this.lore = Lists.newArrayList(ColorUtil.format(lore));
+            return this;
+        }
+
+        public ItemStackItemMetaBuilder setItemFlags(List<ItemFlag> itemFlags) {
+            Preconditions.checkNotNull(itemFlags, "itemFlags is null");
+            this.itemFlags = itemFlags;
+            return this;
+        }
+
+        public ItemStackBuilder and() {
+            return innerBuilder;
+        }
+
+        public ItemStackItemMetaBuilder setUnbreakable(boolean flag) {
+            this.unbreakable = flag;
+            return this;
+        }
+
+        private ItemMeta build(ItemStack itemStack) {
+            ItemMeta metaToUse;
+            if(userMeta != null) {
+                metaToUse = userMeta;
+            } else {
+                metaToUse = itemStack.getItemMeta();
+            }
+            metaToUse.setLore(lore);
+            if(name != null) {
+                metaToUse.setDisplayName(name);
+            }
+            metaToUse.setUnbreakable(unbreakable);
+            metaToUse.addItemFlags(itemFlags.toArray(new ItemFlag[0]));
+            return metaToUse;
+        }
+    }
+
 
 
 

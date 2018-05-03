@@ -80,8 +80,9 @@ public class PaginatedExample {
                                 .perPlayerItem()
                                 .setIconRequestConsumer(iconRequest -> new MenuIcon(ItemStackBuilder.create()
                                         .setMaterial(Material.ANVIL)
+                                        .withItemMeta()
                                         .addBlankLore()
-                                        .addLore("Your name: " + iconRequest.getPlayer().getName()).build(), 7))
+                                        .addLore("Your name: " + iconRequest.getPlayer().getName()).and().build(), 7))
                                 .build()
                 )
                 .createMenuTemplateImpl();
