@@ -20,7 +20,7 @@ public class MenuSessionImpl implements MenuSession {
 
     private Map<Integer, MenuItem> itemsByIndex;
 
-    public MenuSessionImpl(MenuTemplate menuTemplate, MenuOpenProcessor openProcessor, Player owner, Consumer<Map<String, Object>> headerConsumer) {
+    MenuSessionImpl(MenuTemplate menuTemplate, MenuOpenProcessor openProcessor, Player owner, Consumer<Map<String, Object>> headerConsumer) {
         this.menuTemplate = menuTemplate;
         this.headerConsumer = headerConsumer;
         this.owner = owner;
