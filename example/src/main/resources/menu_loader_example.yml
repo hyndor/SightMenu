@@ -1,0 +1,27 @@
+menu:
+  meta:
+    name: "&aExample name"
+    rows: 4
+  items:
+    firstItem:
+      slot: 4
+      itemStack:
+        name: "&aCool item"
+        amount: 2
+        data: 1
+        material: WOOD
+        enchantments:
+          firstEnch:
+            enchantment: ARROW_DAMAGE
+            level: 1
+          second:
+            enchantment: ARROW_FIRE
+            level: 1
+        itemFlags:
+          flags:
+            - HIDE_ATTRIBUTES
+            - HIDE_ENCHANTS
+        lore:
+          - "&aFirst green line"
+          - "&cSecond red line"
+        unbreakable: true

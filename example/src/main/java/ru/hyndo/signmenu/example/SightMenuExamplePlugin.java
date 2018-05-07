@@ -2,6 +2,7 @@ package ru.hyndo.signmenu.example;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -14,6 +15,8 @@ import ru.hyndo.sightmenu.MenuTemplate;
 import ru.hyndo.sightmenu.item.MenuIcon;
 import ru.hyndo.sightmenu.paginated.PaginatedMenuTemplate;
 
+import java.io.File;
+
 public class SightMenuExamplePlugin extends JavaPlugin implements Listener {
 
 
@@ -23,7 +26,9 @@ public class SightMenuExamplePlugin extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         apiInstance = MenuApi.prepare(this);
+        saveResource("menu_loader_example.yml", false);
         Bukkit.getPluginManager().registerEvents(this, this);
+        Bukkit.getPluginManager().registerEvents(new MenuLoaderExample(apiInstance, YamlConfiguration.loadConfiguration(new File(getDataFolder(), "menu_loader_example.yml"))), this);
         initSingleTemplate();
     }
 

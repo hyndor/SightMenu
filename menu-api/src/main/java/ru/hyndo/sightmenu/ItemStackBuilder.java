@@ -36,11 +36,16 @@ public class ItemStackBuilder {
     }
 
     private ItemStackBuilder(ItemStack itemStack) {
+        Preconditions.checkNotNull(itemStack, "Null ItemStack");
         this.material = itemStack.getType();
         this.amount = itemStack.getAmount();
         this.data = itemStack.getDurability();
-        this.materialData = itemStack.getData();
-        this.enchantments = itemStack.getEnchantments();
+        if(itemStack.getData() != null) {
+            this.materialData = itemStack.getData();
+        }
+        if(itemStack.getEnchantments() != null) {
+            this.enchantments = itemStack.getEnchantments();
+        }
 
     }
 
@@ -74,13 +79,15 @@ public class ItemStackBuilder {
     }
 
     public ItemStackBuilder setData(MaterialData data) {
+        Preconditions.checkNotNull(data, "Null Material Data");
         this.materialData = data;
         return this;
     }
 
     public ItemStackBuilder setEnchantments(Map<Enchantment, Integer> enchantments) {
         Preconditions.checkNotNull(enchantments, "Null enchantments");
-        this.enchantments = enchantments;
+        enchantments.forEach((ench, l) -> Preconditions.checkNotNull(ench, "Null enchantment in enchantment's collection"));
+        this.enchantments = new HashMap<>(enchantments);
         return this;
     }
 
@@ -101,8 +108,9 @@ public class ItemStackBuilder {
         if(materialData != null) {
             itemStack.setData(materialData);
         }
-        itemStack.addEnchantments(enchantments);
-        itemStack.setItemMeta(itemMetaCreator.apply(itemStack));
+        itemStack.addUnsafeEnchantments(enchantments);
+        ItemMeta createdMeta = itemMetaCreator.apply(itemStack);
+        boolean b = itemStack.setItemMeta(createdMeta);
         return itemStack;
     }
 
@@ -113,7 +121,7 @@ public class ItemStackBuilder {
         private ItemMeta userMeta;
         private List<String> lore = new ArrayList<>();
         private List<ItemFlag> itemFlags = new ArrayList<>();
-        private boolean unbreakable;
+        private boolean unbreakable = false;
 
         public ItemStackItemMetaBuilder(ItemStackBuilder innerBuilder) {
             this.innerBuilder = innerBuilder;
@@ -123,7 +131,6 @@ public class ItemStackBuilder {
             this.userMeta = meta;
             return this;
         }
-
 
         public ItemStackItemMetaBuilder setName(String name) {
             Preconditions.checkNotNull(name, "Null name");
@@ -186,8 +193,12 @@ public class ItemStackBuilder {
             if(name != null) {
                 metaToUse.setDisplayName(name);
             }
-            metaToUse.setUnbreakable(unbreakable);
-            metaToUse.addItemFlags(itemFlags.toArray(new ItemFlag[0]));
+            if(unbreakable) {
+                metaToUse.setUnbreakable(unbreakable);
+            }
+            if(itemFlags.size() > 0) {
+                metaToUse.addItemFlags(itemFlags.toArray(new ItemFlag[0]));
+            }
             return metaToUse;
         }
     }

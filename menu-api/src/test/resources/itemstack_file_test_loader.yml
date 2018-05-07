@@ -1,0 +1,13 @@
+itemStack:
+  name: "&aКрутой предмет"
+  amount: 2
+  data: 1
+  material: WOOD
+  itemFlags:
+    flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ENCHANTS
+  lore:
+    - "&aПервая строка"
+    - "&cВторая строка"
+  unbreakable: true

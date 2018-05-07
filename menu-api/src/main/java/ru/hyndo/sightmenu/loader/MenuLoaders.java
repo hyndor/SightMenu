@@ -2,6 +2,7 @@ package ru.hyndo.sightmenu.loader;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -21,17 +22,33 @@ import static ru.hyndo.sightmenu.util.ColorUtil.color;
 
 public class MenuLoaders {
 
-    public static MenuLoader yamlMenuLoader(MenuApiInstance apiInstance,
-                                            Function<ConfigurationSection, MenuItem> itemSerializer) {
+    private MenuApiInstance apiInstance;
+
+    private MenuLoaders(MenuApiInstance apiInstance) {
+        this.apiInstance = apiInstance;
+    }
+
+    public static MenuLoaders create(MenuApiInstance apiInstance) {
+        return new MenuLoaders(apiInstance);
+    }
+
+    public MenuLoader<ConfigurationSection> yamlMenuLoader() {
+        return yamlMenuLoader(cachedMenuItemSerializer(defaultItemStackSerializer()));
+    }
+
+    public MenuLoader<ConfigurationSection> yamlMenuLoader(Function<ConfigurationSection, MenuItem> itemSerializer) {
         return new SimpleYamlMenuLoader(apiInstance, itemSerializer);
     }
 
-    public static Function<ConfigurationSection, ItemStack> defaultItemStackSerializer() {
+    public Function<ConfigurationSection, ItemStack> defaultItemStackSerializer() {
         return DefaultItemStackSerializer.INSTANCE;
     }
 
-    public static Function<ConfigurationSection, MenuItem> cachedMenuItemSerializer(MenuApiInstance apiInstance,
-                                                                                    Function<ConfigurationSection, ItemStack> itemStackSerializer) {
+    public Function<ConfigurationSection, MenuItem> cachedMenuItemSerializer() {
+        return cachedMenuItemSerializer(defaultItemStackSerializer());
+    }
+
+    public Function<ConfigurationSection, MenuItem> cachedMenuItemSerializer(Function<ConfigurationSection, ItemStack> itemStackSerializer) {
         return new CachedMenuItemSerializer(apiInstance, itemStackSerializer);
     }
 
@@ -96,23 +113,27 @@ public class MenuLoaders {
         }
 
         private List<ItemFlag> getFlags(ConfigurationSection cfg) {
-            return Optional.ofNullable(cfg.getStringList("flags")).map(list -> list.stream()
+            return Optional.ofNullable(cfg).map(a -> a.getStringList("flags")).map(list -> list.stream()
+                    .map(String::toUpperCase)
                     .map(ItemFlag::valueOf)
                     .collect(Collectors.toList())).orElse(new ArrayList<>());
         }
 
         private Map<Enchantment, Integer> getEnchantments(ConfigurationSection cfg) {
-            return cfg.getKeys(false)
+            if(cfg == null) {
+                return new HashMap<>();
+            }
+            Map<Enchantment, Integer> enchantments = new HashMap<>();
+            cfg.getKeys(false)
                     .stream()
                     .map(cfg::getConfigurationSection)
-                    .collect(Collectors.toMap(
-                            enchCfg -> Enchantment.getByName(enchCfg.getString("enchantment")),
-                            enchCfg -> enchCfg.getInt("level")));
+                    .forEach(enchCfg -> enchantments.put(Enchantment.getByName(enchCfg.getString("enchantment")), enchCfg.getInt("level")));
+            return enchantments;
         }
 
     }
 
-    public static class SimpleYamlMenuLoader implements MenuLoader<ConfigurationSection> {
+    private static class SimpleYamlMenuLoader implements MenuLoader<ConfigurationSection> {
 
         private MenuApiInstance apiInstance;
         private Function<ConfigurationSection, MenuItem> menuItemSerializer;
