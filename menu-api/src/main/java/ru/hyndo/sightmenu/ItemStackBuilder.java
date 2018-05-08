@@ -123,7 +123,7 @@ public class ItemStackBuilder {
         private List<ItemFlag> itemFlags = new ArrayList<>();
         private boolean unbreakable = false;
 
-        public ItemStackItemMetaBuilder(ItemStackBuilder innerBuilder) {
+        private ItemStackItemMetaBuilder(ItemStackBuilder innerBuilder) {
             this.innerBuilder = innerBuilder;
         }
 
