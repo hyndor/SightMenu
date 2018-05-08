@@ -52,18 +52,41 @@ public class MenuLoaders {
         return new CachedMenuItemSerializer(apiInstance, itemStackSerializer);
     }
 
-    private static class CachedMenuItemSerializer implements Function<ConfigurationSection, MenuItem> {
+    private static class PerPlayerMenuItemSerializer extends AbstractMenuItemSerializer {
 
-        private MenuApiInstance apiInstance;
-        private Function<ConfigurationSection, ItemStack> itemStackSerializer;
-//        private BiFunction<String, Map<String, Object>, Consumer<MenuItemClick>> listenerProvider;
+        public PerPlayerMenuItemSerializer(MenuApiInstance apiInstance,
+                                           Function<ConfigurationSection, ItemStack> itemStackSerializer) {
+            super(apiInstance, itemStackSerializer);
+        }
 
-        public CachedMenuItemSerializer(MenuApiInstance apiInstance,
-                                        Function<ConfigurationSection, ItemStack> itemStackSerializer
-        ) {
+        @Override
+        public MenuItem apply(ConfigurationSection cfg) {
+            ItemStack itemStack = itemStackSerializer.apply(cfg.getConfigurationSection("itemStack"));
+            MenuIcon menuIcon = new MenuIcon(itemStack, cfg.getInt("slot"));
+            return apiInstance
+                    .itemBuilder()
+                    .cachedItem()
+                    .setMenuIcon(menuIcon)
+                    .build();
+        }
+    }
+
+    private abstract static class AbstractMenuItemSerializer implements Function<ConfigurationSection, MenuItem> {
+        MenuApiInstance apiInstance;
+        Function<ConfigurationSection, ItemStack> itemStackSerializer;
+
+        public AbstractMenuItemSerializer(MenuApiInstance apiInstance,
+                                           Function<ConfigurationSection, ItemStack> itemStackSerializer) {
             this.apiInstance = apiInstance;
             this.itemStackSerializer = itemStackSerializer;
-//            this.listenerProvider = listenerProvider;
+        }
+    }
+
+    private static class CachedMenuItemSerializer extends AbstractMenuItemSerializer {
+
+        public CachedMenuItemSerializer(MenuApiInstance apiInstance,
+                                        Function<ConfigurationSection, ItemStack> itemStackSerializer) {
+            super(apiInstance, itemStackSerializer);
         }
 
         @Override
