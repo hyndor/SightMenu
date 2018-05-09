@@ -11,6 +11,8 @@
     <modules>
         <module>menu-api</module>
         <module>example</module>
+        <module>registry</module>
+        <module>loader</module>
     </modules>
 
     <properties>

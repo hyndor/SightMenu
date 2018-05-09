@@ -2,11 +2,13 @@ package ru.hyndo.sightmenu.loader;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import ru.hyndo.sightmenu.*;
+import ru.hyndo.sightmenu.ItemStackBuilder;
+import ru.hyndo.sightmenu.MenuApiInstance;
+import ru.hyndo.sightmenu.MenuOpenProcessors;
+import ru.hyndo.sightmenu.MenuTemplate;
 import ru.hyndo.sightmenu.item.MenuIcon;
 import ru.hyndo.sightmenu.item.MenuItem;
 import ru.hyndo.sightmenu.item.MenuItemClick;
@@ -17,8 +19,6 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import static ru.hyndo.sightmenu.util.ColorUtil.color;
 
 public class MenuLoaders {
 
@@ -32,16 +32,21 @@ public class MenuLoaders {
         return new MenuLoaders(apiInstance);
     }
 
-    public MenuLoader<ConfigurationSection> yamlMenuLoader() {
-        return yamlMenuLoader(cachedMenuItemSerializer(defaultItemStackSerializer()));
-    }
-
     public MenuLoader<ConfigurationSection> yamlMenuLoader(Function<ConfigurationSection, MenuItem> itemSerializer) {
         return new SimpleYamlMenuLoader(apiInstance, itemSerializer);
     }
 
     public Function<ConfigurationSection, ItemStack> defaultItemStackSerializer() {
         return DefaultItemStackSerializer.INSTANCE;
+    }
+
+    public Function<ConfigurationSection, MenuItem> perPlayerMenuItemSerializer() {
+        return perPlayerMenuItemSerializer(defaultItemStackSerializer(), null);
+    }
+
+    public Function<ConfigurationSection, MenuItem> perPlayerMenuItemSerializer(Function<ConfigurationSection, ItemStack> itemStackSerializer,
+                                                                                BiFunction<String, Map<String, Object>, Consumer<MenuItemClick>> listenerProvider) {
+        return new PerPlayerMenuItemSerializer(apiInstance, itemStackSerializer, listenerProvider);
     }
 
     public Function<ConfigurationSection, MenuItem> cachedMenuItemSerializer() {
@@ -54,9 +59,13 @@ public class MenuLoaders {
 
     private static class PerPlayerMenuItemSerializer extends AbstractMenuItemSerializer {
 
+        private BiFunction<String, Map<String, Object>, Consumer<MenuItemClick>> listenerProvider;
+
         public PerPlayerMenuItemSerializer(MenuApiInstance apiInstance,
-                                           Function<ConfigurationSection, ItemStack> itemStackSerializer) {
+                                           Function<ConfigurationSection, ItemStack> itemStackSerializer,
+                                           BiFunction<String, Map<String, Object>, Consumer<MenuItemClick>> listenerProvider) {
             super(apiInstance, itemStackSerializer);
+            this.listenerProvider = listenerProvider;
         }
 
         @Override
@@ -65,21 +74,67 @@ public class MenuLoaders {
             MenuIcon menuIcon = new MenuIcon(itemStack, cfg.getInt("slot"));
             return apiInstance
                     .itemBuilder()
-                    .cachedItem()
-                    .setMenuIcon(menuIcon)
+                    .perPlayerItem()
+                    .withClickListener(collectClickListeners(cfg.getConfigurationSection("listeners")))
+                    .setIconRequestConsumer(iconRequest -> menuIcon)
                     .build();
         }
+
+        private List<Consumer<MenuItemClick>> collectClickListeners(ConfigurationSection cfg) {
+            List<Consumer<MenuItemClick>> consumerList = new ArrayList<>();
+            cfg.getKeys(false)
+                    .stream()
+                    .map(cfg::getConfigurationSection)
+                    .forEach(listenerCfg -> {
+                        String name = listenerCfg.getName();
+                        ConfigurationSection payloadCfg = listenerCfg.getConfigurationSection("payload");
+                        Map<String, Object> payload = new HashMap<>();
+                        payloadCfg.getKeys(false)
+                                .forEach(key -> payload.put(key, payloadCfg.get(key)));
+                        Consumer<MenuItemClick> consumer = itemClick -> {
+                            Map<String, Object> cachedPayload = new HashMap<>(payload);
+                            cachedPayload.put("event", itemClick);
+                            Consumer<MenuItemClick> apply = listenerProvider.apply(name, cachedPayload);
+                            apply.accept(itemClick);
+                        };
+                        consumerList.add(consumer);
+                    });
+            return consumerList;
+        }
+
     }
 
-    private abstract static class AbstractMenuItemSerializer implements Function<ConfigurationSection, MenuItem> {
-        MenuApiInstance apiInstance;
-        Function<ConfigurationSection, ItemStack> itemStackSerializer;
+    private static class SimpleYamlMenuLoader implements MenuLoader<ConfigurationSection> {
 
-        public AbstractMenuItemSerializer(MenuApiInstance apiInstance,
-                                           Function<ConfigurationSection, ItemStack> itemStackSerializer) {
+        private MenuApiInstance apiInstance;
+        private Function<ConfigurationSection, MenuItem> menuItemSerializer;
+
+        SimpleYamlMenuLoader(MenuApiInstance apiInstance, Function<ConfigurationSection, MenuItem> menuItemSerializer) {
             this.apiInstance = apiInstance;
-            this.itemStackSerializer = itemStackSerializer;
+            this.menuItemSerializer = menuItemSerializer;
         }
+
+        @Override
+        public MenuTemplate apply(ConfigurationSection cfg) {
+            ConfigurationSection meta = cfg.getConfigurationSection("meta");
+            String name = ColorUtil.color(meta.getString("name"));
+            int rows = meta.getInt("rows");
+            ConfigurationSection itemsCfg = cfg.getConfigurationSection("items");
+            return apiInstance
+                    .templateBuilder()
+                    .singleTemplate()
+                    .setName(name)
+                    .setOpenProcessor(MenuOpenProcessors.standardOpen())
+                    .setRows(rows)
+                    .withItems(itemsCfg
+                            .getKeys(false)
+                            .stream()
+                            .map(itemsCfg::getConfigurationSection)
+                            .map(menuItemSerializer)
+                            .collect(Collectors.toSet()))
+                    .createMenuTemplateImpl();
+        }
+
     }
 
     private static class CachedMenuItemSerializer extends AbstractMenuItemSerializer {
@@ -98,6 +153,18 @@ public class MenuLoaders {
                     .cachedItem()
                     .setMenuIcon(menuIcon)
                     .build();
+        }
+
+    }
+
+    private abstract static class AbstractMenuItemSerializer implements Function<ConfigurationSection, MenuItem> {
+        MenuApiInstance apiInstance;
+        Function<ConfigurationSection, ItemStack> itemStackSerializer;
+
+        AbstractMenuItemSerializer(MenuApiInstance apiInstance,
+                                   Function<ConfigurationSection, ItemStack> itemStackSerializer) {
+            this.apiInstance = apiInstance;
+            this.itemStackSerializer = itemStackSerializer;
         }
     }
 
@@ -156,37 +223,6 @@ public class MenuLoaders {
 
     }
 
-    private static class SimpleYamlMenuLoader implements MenuLoader<ConfigurationSection> {
 
-        private MenuApiInstance apiInstance;
-        private Function<ConfigurationSection, MenuItem> menuItemSerializer;
-
-        SimpleYamlMenuLoader(MenuApiInstance apiInstance, Function<ConfigurationSection, MenuItem> menuItemSerializer) {
-            this.apiInstance = apiInstance;
-            this.menuItemSerializer = menuItemSerializer;
-        }
-
-        @Override
-        public MenuTemplate apply(ConfigurationSection cfg) {
-            ConfigurationSection meta = cfg.getConfigurationSection("meta");
-            String name = color(meta.getString("name"));
-            int rows = meta.getInt("rows");
-            ConfigurationSection itemsCfg = cfg.getConfigurationSection("items");
-            return apiInstance
-                    .templateBuilder()
-                    .singleTemplate()
-                    .setName(name)
-                    .setOpenProcessor(MenuOpenProcessors.standardOpen())
-                    .setRows(rows)
-                    .withItems(itemsCfg
-                            .getKeys(false)
-                            .stream()
-                            .map(itemsCfg::getConfigurationSection)
-                            .map(menuItemSerializer)
-                            .collect(Collectors.toSet()))
-                    .createMenuTemplateImpl();
-        }
-
-    }
 
 }

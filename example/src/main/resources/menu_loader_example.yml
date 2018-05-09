@@ -5,6 +5,10 @@ menu:
   items:
     firstItem:
       slot: 4
+      listeners:
+        messageSender:
+          payload:
+            message: "&aHello bro!"
       itemStack:
         name: "&aCool item"
         amount: 2

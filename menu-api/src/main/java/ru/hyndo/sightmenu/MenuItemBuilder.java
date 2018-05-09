@@ -7,6 +7,7 @@ import ru.hyndo.sightmenu.item.IconRequest;
 import ru.hyndo.sightmenu.item.MenuIcon;
 import ru.hyndo.sightmenu.item.MenuItemClick;
 
+import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -28,9 +29,15 @@ public class MenuItemBuilder {
         AbstractMenuItemBuilder() {
         }
 
-        public AbstractMenuItemBuilder withClickListener(Consumer<MenuItemClick> onClick) {
+        AbstractMenuItemBuilder withClickListener(Consumer<MenuItemClick> onClick) {
             Preconditions.checkNotNull(onClick, "onClick is null");
             this.onClick = this.onClick.andThen(onClick);
+            return this;
+        }
+
+        AbstractMenuItemBuilder withClickListener(Collection<Consumer<MenuItemClick>> onClickList) {
+            Preconditions.checkNotNull(onClick, "onClick is null");
+            onClickList.forEach(iterated -> this.onClick = this.onClick.andThen(iterated));
             return this;
         }
 
@@ -47,6 +54,11 @@ public class MenuItemBuilder {
             Preconditions.checkNotNull(iconRequestConsumer, "iconRequestConsumer is null");
             this.iconRequestConsumer = iconRequestConsumer;
             return this;
+        }
+
+        @Override
+        public PerPlayerMenuItemBuilder withClickListener(Collection<Consumer<MenuItemClick>> onClickList) {
+            return (PerPlayerMenuItemBuilder) super.withClickListener(onClickList);
         }
 
         @Override
@@ -72,6 +84,11 @@ public class MenuItemBuilder {
             Preconditions.checkNotNull(menuIcon, "menuIcon is null");
             this.menuIcon = menuIcon;
             return this;
+        }
+
+        @Override
+        public CachedMenuItemBuilder withClickListener(Collection<Consumer<MenuItemClick>> onClickList) {
+            return (CachedMenuItemBuilder) super.withClickListener(onClickList);
         }
 
         @Override

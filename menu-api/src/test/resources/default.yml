@@ -1,0 +1,9 @@
+listeners:
+  messageSender:
+    payloads:
+      first: xui
+      second: 2
+      third:
+        complexConfiguration:
+          paramArg: "Long string"
+          secondArg: "Long second string"
