@@ -18,18 +18,22 @@ public class ListenerRegistries {
 
     }
 
-    public static <I, F> ListenerRegistry.RegisteredListener<I, F> newImmutableListener(I identifier, F listener,
-                                                                                        ImmutableListenerProvider<I, F> immutableListenerProvider) {
-        return new ImmutableRegisteredListener<>(new SimpleRegisteredListener<>(identifier, listener), immutableListenerProvider);
+    public static <I, F> ListenerRegistry.RegisteredListener<I, F> newImmutableRegisteredListener(I identifier, F listener,
+                                                                                                  ImmutableListenerProvider<I, F> immutableListenerProvider) {
+        return new ImmutableRegisteredListener<>(identifier, listener, immutableListenerProvider);
     }
 
-    public static <I, F> ListenerRegistry.RegisteredListener<I, F> newImmutableListener(ListenerRegistry.RegisteredListener<I, F> listener,
-                                                                                        ImmutableListenerProvider<I, F> immutableListenerProvider) {
-        return new ImmutableRegisteredListener<>(listener, immutableListenerProvider);
+    public static <I, F> ListenerRegistry.RegisteredListener<I, F> newImmutableRegisteredListener(ListenerRegistry.RegisteredListener<I, F> listener,
+                                                                                                  ImmutableListenerProvider<I, F> immutableListenerProvider) {
+        return new ImmutableRegisteredListener<>(listener.getIdentifier(), listener.getListener(), immutableListenerProvider);
     }
 
     public static <I, F> ListenerRegistry.RegisteredListener<I, F> newRegisteredListener(I id, F listener) {
         return new SimpleRegisteredListener<>(id, listener);
+    }
+
+    public static <I, F> ListenerRegistry<I, F> newImmutableRegistry(ListenerRegistry<I, F> registry) {
+        return new ImmutableListenerRegistry<>(registry);
     }
 
     public interface ImmutableListenerProvider<I, F> {
@@ -50,13 +54,18 @@ public class ListenerRegistries {
         }
 
         @Override
-        public void registerListener(I identifier, F listener, boolean override) {
+        public RegisteredListener<I, F> registerListener(I identifier, F listener, boolean override) {
             throw new UnsupportedOperationException("Can'not modify immutable Listener Registry");
         }
 
         @Override
-        public void removeListener(I identifier) {
-            throw new UnsupportedOperationException("Can'not modify unmodifiable Listener Registry");
+        public boolean contains(I identifier) {
+            return registry.contains(identifier);
+        }
+
+        @Override
+        public boolean removeListener(I identifier) {
+            throw new UnsupportedOperationException("Can'not modify immutable Listener Registry");
         }
 
         @Override
@@ -72,22 +81,26 @@ public class ListenerRegistries {
 
     private static class ImmutableRegisteredListener<I, F> implements ListenerRegistry.RegisteredListener<I, F> {
 
-        private ListenerRegistry.RegisteredListener<I, F> registeredListener;
+        private I id;
+        private F listener;
         private ImmutableListenerProvider<I, F> immutableListenerProvider;
 
-        public ImmutableRegisteredListener(ListenerRegistry.RegisteredListener<I, F> registeredListener, ImmutableListenerProvider<I, F> immutableListenerProvider) {
-            this.registeredListener = registeredListener;
+        public ImmutableRegisteredListener(I id, F listener,
+                                           ImmutableListenerProvider<I, F> immutableListenerProvider) {
+            this.id = immutableListenerProvider.toImmutableIdentifier(id);
+            this.listener = immutableListenerProvider.toImmutableListener(listener);
             this.immutableListenerProvider = immutableListenerProvider;
         }
 
         @Override
         public I getIdentifier() {
-            return immutableListenerProvider.toImmutableIdentifier(registeredListener.getIdentifier());
+            System.out.println("getting id immutable");
+            return immutableListenerProvider.toImmutableIdentifier(id);
         }
 
         @Override
         public F getListener() {
-            return immutableListenerProvider.toImmutableListener(registeredListener.getListener());
+            return immutableListenerProvider.toImmutableListener(listener);
         }
     }
 

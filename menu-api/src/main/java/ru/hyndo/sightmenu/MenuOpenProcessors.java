@@ -46,7 +46,7 @@ public class MenuOpenProcessors {
 
         @Override
         public String toString() {
-            return "MenuOpenProcessors.directExecutor()";
+            return "MenuOpenProcessors.standardOpen()";
         }
     }
 

@@ -2,16 +2,66 @@ package ru.hyndo.sightmenu.registry;
 
 import java.util.Map;
 
+/**
+ * Actual holder for registered listeners
+ */
 public interface ListenerRegistry<I, F> {
 
-    void registerListener(I identifier, F listener, boolean override);
+    /**
+     * @param identifier listener id
+     * @param listener   actual handler
+     * @return registered listener. If listener with such name already exists and override flag is false than, it returns previously registered listener
+     */
+    default RegisteredListener<I, F> registerListener(I identifier, F listener) {
+        return registerListener(identifier, listener, false);
+    }
 
-    void removeListener(I identifier);
+    /**
+     * @param identifier listener id
+     * @param listener   actual handler
+     * @param override   shows if existing listener should be overriden
+     * @return registered listener. If listener with such name already exists and override flag is false than, it returns previously registered listener
+     */
+    RegisteredListener<I, F> registerListener(I identifier, F listener, boolean override);
 
+    /**
+     * @param identifier id
+     * @return true if listener exists
+     */
+    boolean contains(I identifier);
+
+    /**
+     * @param listener registered listener
+     * @return true if listener exists
+     */
+    default boolean contains(RegisteredListener<I, F> listener) {
+        return contains(listener.getIdentifier());
+    }
+
+    /**
+     * @param identifier id
+     * @return true if listener with such id existed
+     */
+    boolean removeListener(I identifier);
+
+    /**
+     * @param registeredListener id
+     * @return true if listener with such id existed
+     */
+    default boolean removeListener(RegisteredListener<I, F> registeredListener) {
+        return removeListener(registeredListener.getIdentifier());
+    }
+
+    /**
+     * @return unmodifiable view of all registered listeners
+     */
     Map<I, RegisteredListener<I, F>> getRegisteredListeners();
 
     void merge(ListenerRegistry<I, F> registry);
 
+    /**
+     * Represents registered listener
+     */
     interface RegisteredListener<I, F> {
 
         I getIdentifier();

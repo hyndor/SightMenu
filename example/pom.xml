@@ -34,6 +34,8 @@
                     <artifactSet>
                         <includes>
                             <include>ru.hyndo.menu:menu-api:*</include>
+                            <include>ru.hyndo.menu:bukkit-loader:*</include>
+                            <include>ru.hyndo.menu:registry:*</include>
                         </includes>
                     </artifactSet>
                 </configuration>
