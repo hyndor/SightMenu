@@ -8,10 +8,10 @@ import ru.hyndo.sightmenu.item.MenuItemClick;
 import ru.hyndo.sightmenu.registry.ListenerRegistries;
 import ru.hyndo.sightmenu.registry.ListenerRegistry;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.logging.Logger;
 
 public class ClickListenerRegistry implements Function<String, BiConsumer<MenuItemClick, Map<String, Object>>>,
@@ -45,7 +45,9 @@ public class ClickListenerRegistry implements Function<String, BiConsumer<MenuIt
         STANDARD_PREDEFINED_REGISTRY = ListenerRegistries.newImmutableRegistry(registry);
     }
 
-    private Map<String, RegisteredListener<String, BiConsumer<MenuItemClick, Map<String, Object>>>> registryMap = new ConcurrentHashMap<>();
+    private Set<UnaryOperator<BiConsumer<MenuItemClick, Map<String, Object>>>> preProcessors = new HashSet<>();
+
+    private Map<String, RegisteredListener<String, BiConsumer<MenuItemClick, Map<String, Object>>>> registryMap = new HashMap<>();
 
     public ClickListenerRegistry(Map<String, RegisteredListener<String, BiConsumer<MenuItemClick, Map<String, Object>>>> registryMap) {
         Preconditions.checkNotNull(registryMap, "Null registryMap");
@@ -67,6 +69,11 @@ public class ClickListenerRegistry implements Function<String, BiConsumer<MenuIt
     }
 
     @Override
+    public Optional<RegisteredListener<String, BiConsumer<MenuItemClick, Map<String, Object>>>> getRegisteredListener(String id) {
+        return Optional.ofNullable(registryMap.get(id));
+    }
+
+    @Override
     public Map<String, RegisteredListener<String, BiConsumer<MenuItemClick, Map<String, Object>>>> getRegisteredListeners() {
         return ImmutableMap.copyOf(registryMap);
     }
@@ -75,6 +82,17 @@ public class ClickListenerRegistry implements Function<String, BiConsumer<MenuIt
     public void merge(ListenerRegistry<String, BiConsumer<MenuItemClick, Map<String, Object>>> registry) {
         ListenerRegistry<String, BiConsumer<MenuItemClick, Map<String, Object>>> copy = ListenerRegistries.copyOf(registry, ClickListenerRegistry::new);
         registryMap.putAll(copy.getRegisteredListeners());
+        reInitMap();
+    }
+
+
+    @Override
+    public void addListenerPreProcessor(UnaryOperator<BiConsumer<MenuItemClick, Map<String, Object>>> processor) {
+        Preconditions.checkNotNull(processor, "Null processor");
+        preProcessors.add(processor);
+        if (preProcessors.size() != 1) {
+            reInitMap();
+        }
     }
 
     @Override
@@ -88,9 +106,23 @@ public class ClickListenerRegistry implements Function<String, BiConsumer<MenuIt
             LOGGER.warning(() -> String.format("Listener with name %s already exists. If you want to override it, enable override flag", name));
             return previous;
         }
+        handler = processHandler(handler);
         RegisteredListener<String, BiConsumer<MenuItemClick, Map<String, Object>>> listener = ListenerRegistries.newRegisteredListener(name, handler);
         registryMap.put(name, listener);
         return listener;
+    }
+
+    private void reInitMap() {
+        Map<String, RegisteredListener<String, BiConsumer<MenuItemClick, Map<String, Object>>>> newMap = new HashMap<>();
+        registryMap.forEach((name, registeredListener) -> newMap.put(name, ListenerRegistries.newRegisteredListener(name, processHandler(registeredListener.getListener()))));
+        this.registryMap = newMap;
+    }
+
+    private BiConsumer<MenuItemClick, Map<String, Object>> processHandler(BiConsumer<MenuItemClick, Map<String, Object>> handler) {
+        for (UnaryOperator<BiConsumer<MenuItemClick, Map<String, Object>>> preProcessor : preProcessors) {
+            handler = preProcessor.apply(handler);
+        }
+        return handler;
     }
 
     @Override

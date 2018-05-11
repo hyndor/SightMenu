@@ -13,6 +13,7 @@
         <module>example</module>
         <module>registry</module>
         <module>loader</module>
+        <module>placeholder</module>
     </modules>
 
     <properties>

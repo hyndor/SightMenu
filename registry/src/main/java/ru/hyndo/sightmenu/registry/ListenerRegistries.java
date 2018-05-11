@@ -5,7 +5,9 @@ import com.google.common.collect.ImmutableMap;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 public class ListenerRegistries {
 
@@ -54,6 +56,11 @@ public class ListenerRegistries {
         }
 
         @Override
+        public void addListenerPreProcessor(UnaryOperator<F> processor) {
+            throw new UnsupportedOperationException("Can'not modify immutable Listener Registry");
+        }
+
+        @Override
         public RegisteredListener<I, F> registerListener(I identifier, F listener, boolean override) {
             throw new UnsupportedOperationException("Can'not modify immutable Listener Registry");
         }
@@ -66,6 +73,11 @@ public class ListenerRegistries {
         @Override
         public boolean removeListener(I identifier) {
             throw new UnsupportedOperationException("Can'not modify immutable Listener Registry");
+        }
+
+        @Override
+        public Optional<RegisteredListener<I, F>> getRegisteredListener(I id) {
+            return registry.getRegisteredListener(id);
         }
 
         @Override

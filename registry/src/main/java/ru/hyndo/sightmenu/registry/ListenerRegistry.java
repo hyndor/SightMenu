@@ -1,6 +1,8 @@
 package ru.hyndo.sightmenu.registry;
 
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.UnaryOperator;
 
 /**
  * Actual holder for registered listeners
@@ -17,9 +19,16 @@ public interface ListenerRegistry<I, F> {
     }
 
     /**
+     * Processor will be attached to every registered listener
+     *
+     * @param processor handler
+     */
+    void addListenerPreProcessor(UnaryOperator<F> processor);
+
+    /**
      * @param identifier listener id
      * @param listener   actual handler
-     * @param override   shows if existing listener should be overriden
+     * @param override   shows if existing listener should be overridden
      * @return registered listener. If listener with such name already exists and override flag is false than, it returns previously registered listener
      */
     RegisteredListener<I, F> registerListener(I identifier, F listener, boolean override);
@@ -53,10 +62,21 @@ public interface ListenerRegistry<I, F> {
     }
 
     /**
+     * @param id of the listener
+     * @return registered listener
+     */
+    Optional<RegisteredListener<I, F>> getRegisteredListener(I id);
+
+    /**
      * @return unmodifiable view of all registered listeners
      */
     Map<I, RegisteredListener<I, F>> getRegisteredListeners();
 
+    /**
+     * Add all registered listeners to the current registry, making full copy of registered listeners.
+     *
+     * @param registry to merge
+     */
     void merge(ListenerRegistry<I, F> registry);
 
     /**

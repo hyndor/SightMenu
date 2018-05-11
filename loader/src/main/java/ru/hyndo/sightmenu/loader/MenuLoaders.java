@@ -208,6 +208,9 @@ public class MenuLoaders {
         private Consumer<MenuItemClick> collectClickListeners(ConfigurationSection cfg) {
             Consumer<MenuItemClick> consumer = a -> {
             };
+            if (cfg == null) {
+                return consumer;
+            }
             Map<String, RegisteredListener<String, BiConsumer<MenuItemClick, Map<String, Object>>>> registeredListeners = registry.getRegisteredListeners();
             for (String name : cfg.getKeys(false)) {
                 if (registeredListeners.get(name.toLowerCase()) == null) {
@@ -223,6 +226,9 @@ public class MenuLoaders {
         }
 
         private Map<String, Object> collectPayload(ConfigurationSection cfg) {
+            if (cfg == null) {
+                return new HashMap<>();
+            }
             Map<String, Object> payload = new HashMap<>();
             cfg.getKeys(false).forEach(key -> payload.put(key, cfg.get(key)));
             return payload;

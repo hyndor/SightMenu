@@ -9,21 +9,14 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>bukkit-loader</artifactId>
-
+    <artifactId>placeholder</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>ru.hyndo.menu</groupId>
-            <artifactId>registry</artifactId>
-            <version>2.1-SNAPSHOT</version>
-        </dependency>
         <dependency>
             <groupId>ru.hyndo.menu</groupId>
             <artifactId>menu-api</artifactId>
             <version>2.1-SNAPSHOT</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils -->
     </dependencies>
 
 </project>
