@@ -16,6 +16,9 @@ public abstract class AbstractPlaceHolderMapper implements UnaryOperator<BiConsu
     @Override
     public BiConsumer<MenuItemClick, Map<String, Object>> apply(BiConsumer<MenuItemClick, Map<String, Object>> consumer) {
         return (itemClick, payload) -> {
+            if (itemClick == null || payload == null) {
+                return;
+            }
             StrSubstitutor strSubstitutor = new StrSubstitutor(StrLookup.mapLookup(getValuesToReplace(itemClick, payload)));
             new HashMap<>(payload).forEach((str, obj) -> {
                 if (obj instanceof String) {
