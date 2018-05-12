@@ -212,12 +212,13 @@ public class MenuLoaders {
                 return consumer;
             }
             Map<String, RegisteredListener<String, BiConsumer<MenuItemClick, Map<String, Object>>>> registeredListeners = registry.getRegisteredListeners();
-            for (String name : cfg.getKeys(false)) {
+            for (String listenerKey : cfg.getKeys(false)) {
+                ConfigurationSection listenerCfg = cfg.getConfigurationSection(listenerKey);
+                String name = listenerCfg.getString("type");
                 if (registeredListeners.get(name.toLowerCase()) == null) {
                     LOGGER.warning(() -> String.format("Unknown listener %s. Pls check the name spell.", name));
                     continue;
                 }
-                ConfigurationSection listenerCfg = cfg.getConfigurationSection(name);
                 BiConsumer<MenuItemClick, Map<String, Object>> listener = registeredListeners.get(name.toLowerCase()).getListener();
                 Map<String, Object> payload = collectPayload(listenerCfg.getConfigurationSection("payload"));
                 consumer = consumer.andThen(FunctionUtil.bindLast(listener, payload));

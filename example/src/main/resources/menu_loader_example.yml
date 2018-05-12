@@ -6,9 +6,14 @@ menu:
     firstItem:
       slot: 4
       listeners:
-        messageSender:
+        anyUniqueId:
+          type: messageSender
           payload:
             message: "&aHello bro! Your name ${player}, your health ${health}"
+        secondSameListener:
+          type: messageSender
+          payload:
+            message: "&aHello friend! Your name ${player}, your health ${health}"
       itemStack:
         name: "&aCool item"
         amount: 2
