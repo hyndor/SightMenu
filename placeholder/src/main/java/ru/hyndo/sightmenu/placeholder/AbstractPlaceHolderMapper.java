@@ -12,7 +12,7 @@ import java.util.function.UnaryOperator;
 
 public abstract class AbstractPlaceHolderMapper implements UnaryOperator<BiConsumer<MenuItemClick, Map<String, Object>>> {
 
-    protected abstract Map<String, String> getValuesToReplace(MenuItemClick click, Map<String, Object> payload);
+    protected abstract void populateMap(MenuItemClick click, Map<String, Object> payload, Map<String, String> mapToPopulate);
 
     @Override
     public BiConsumer<MenuItemClick, Map<String, Object>> apply(BiConsumer<MenuItemClick, Map<String, Object>> consumer) {
@@ -20,7 +20,9 @@ public abstract class AbstractPlaceHolderMapper implements UnaryOperator<BiConsu
             if (itemClick == null || payload == null) {
                 return;
             }
-            StrSubstitutor strSubstitutor = new StrSubstitutor(StrLookup.mapLookup(getValuesToReplace(itemClick, payload)));
+            Map<String, String> map = new HashMap<>();
+            populateMap(itemClick, payload, map);
+            StrSubstitutor strSubstitutor = new StrSubstitutor(StrLookup.mapLookup(map));
             Map<String, Object> cached = new HashMap<>();
             new HashMap<>(payload).forEach((str, obj) -> {
                 if (obj instanceof String) {
