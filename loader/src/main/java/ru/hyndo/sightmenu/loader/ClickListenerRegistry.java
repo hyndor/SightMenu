@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import ru.hyndo.sightmenu.item.MenuItemClick;
+import ru.hyndo.sightmenu.placeholder.DefaultPlaceholderMapper;
 import ru.hyndo.sightmenu.registry.ListenerRegistries;
 import ru.hyndo.sightmenu.registry.ListenerRegistry;
 
@@ -42,6 +43,7 @@ public class ClickListenerRegistry implements Function<String, BiConsumer<MenuIt
                 throw new IllegalArgumentException(String.format("Unknown executor type %s. Expected: console or player", executor));
             }
         });
+        registry.addListenerPreProcessor(new DefaultPlaceholderMapper());
         STANDARD_PREDEFINED_REGISTRY = ListenerRegistries.newImmutableRegistry(registry);
     }
 
@@ -90,7 +92,7 @@ public class ClickListenerRegistry implements Function<String, BiConsumer<MenuIt
     public void addListenerPreProcessor(UnaryOperator<BiConsumer<MenuItemClick, Map<String, Object>>> processor) {
         Preconditions.checkNotNull(processor, "Null processor");
         preProcessors.add(processor);
-        if (preProcessors.size() != 1) {
+        if (registryMap.size() > 0) {
             reInitMap();
         }
     }

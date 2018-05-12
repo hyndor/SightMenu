@@ -3,6 +3,7 @@ package ru.hyndo.sightmenu.placeholder;
 import org.apache.commons.lang.text.StrLookup;
 import org.apache.commons.lang.text.StrSubstitutor;
 import ru.hyndo.sightmenu.item.MenuItemClick;
+import ru.hyndo.sightmenu.util.ColorUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,11 +21,15 @@ public abstract class AbstractPlaceHolderMapper implements UnaryOperator<BiConsu
                 return;
             }
             StrSubstitutor strSubstitutor = new StrSubstitutor(StrLookup.mapLookup(getValuesToReplace(itemClick, payload)));
+            Map<String, Object> cached = new HashMap<>();
             new HashMap<>(payload).forEach((str, obj) -> {
                 if (obj instanceof String) {
-                    payload.put(str, strSubstitutor.replace((String) obj));
+                    cached.put(str, ColorUtil.color(strSubstitutor.replace((String) obj)));
+                } else {
+                    cached.put(str, obj);
                 }
             });
+            consumer.accept(itemClick, cached);
         };
     }
 }

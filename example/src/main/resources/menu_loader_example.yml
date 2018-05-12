@@ -8,7 +8,7 @@ menu:
       listeners:
         messageSender:
           payload:
-            message: "&aHello bro!"
+            message: "&aHello bro! Your name ${player}, your health ${health}"
       itemStack:
         name: "&aCool item"
         amount: 2
