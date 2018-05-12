@@ -13,7 +13,7 @@ public class DefaultPlaceholderMapper extends AbstractPlaceHolderMapper {
         Player player = click.getPlayer();
         Map<String, String> values = new HashMap<>();
         values.put("player", player.getName());
-        values.put("health", String.valueOf(player.getHealth()));
+        values.put("health", String.valueOf((int) player.getHealth()));
         return values;
     }
 
