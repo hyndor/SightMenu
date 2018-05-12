@@ -1,5 +1,6 @@
 package ru.hyndo.sightmenu.loader;
 
+import com.google.common.base.Preconditions;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
@@ -124,6 +125,8 @@ public class MenuLoaders {
         private Function<ConfigurationSection, MenuItem> menuItemSerializer;
 
         SimpleYamlMenuLoader(MenuApiInstance apiInstance, Function<ConfigurationSection, MenuItem> menuItemSerializer) {
+            Objects.requireNonNull(apiInstance, "null api instance");
+            Objects.requireNonNull(menuItemSerializer, "null api menu item serializer");
             this.apiInstance = apiInstance;
             this.menuItemSerializer = menuItemSerializer;
         }
@@ -131,9 +134,11 @@ public class MenuLoaders {
         @Override
         public MenuTemplate apply(ConfigurationSection cfg) {
             ConfigurationSection meta = cfg.getConfigurationSection("meta");
+            Preconditions.checkNotNull(meta, "meta section doesn't exist at path " + cfg.getCurrentPath());
             String name = ColorUtil.color(meta.getString("name"));
             int rows = meta.getInt("rows");
             ConfigurationSection itemsCfg = cfg.getConfigurationSection("items");
+            Preconditions.checkNotNull(itemsCfg, "items section doesn't exist at path " + cfg.getCurrentPath());
             return apiInstance
                     .templateBuilder()
                     .singleTemplate()
@@ -160,8 +165,10 @@ public class MenuLoaders {
 
         @Override
         public MenuItem apply(ConfigurationSection cfg) {
-            ItemStack itemStack = itemStackSerializer.apply(cfg.getConfigurationSection("itemStack"));
-            MenuIcon menuIcon = new MenuIcon(itemStack, cfg.getInt("slot"));
+            ConfigurationSection itemStackCfg = cfg.getConfigurationSection("itemStack");
+            Preconditions.checkNotNull(itemStackCfg, String.format("Invalid configuration section at path %s. itemStack configuration section doesn't exist", cfg.getCurrentPath()));
+            ItemStack itemStack = itemStackSerializer.apply(itemStackCfg);
+            MenuIcon menuIcon = new MenuIcon(itemStack, cfg.getInt("slot", 0));
             return apiInstance
                     .itemBuilder()
                     .cachedItem()
@@ -177,6 +184,8 @@ public class MenuLoaders {
 
         AbstractMenuItemSerializer(MenuApiInstance apiInstance,
                                    Function<ConfigurationSection, ItemStack> itemStackSerializer) {
+            Objects.requireNonNull(apiInstance, "null api instance");
+            Objects.requireNonNull(itemStackSerializer, "null api itemStack serializer");
             this.apiInstance = apiInstance;
             this.itemStackSerializer = itemStackSerializer;
         }
@@ -215,8 +224,12 @@ public class MenuLoaders {
             for (String listenerKey : cfg.getKeys(false)) {
                 ConfigurationSection listenerCfg = cfg.getConfigurationSection(listenerKey);
                 String name = listenerCfg.getString("type");
+                if (name == null) {
+                    LOGGER.warning(() -> String.format("Listener type isn't specified at configuration section %s", listenerCfg.getCurrentPath()));
+                    continue;
+                }
                 if (registeredListeners.get(name.toLowerCase()) == null) {
-                    LOGGER.warning(() -> String.format("Unknown listener %s. Pls check the name spell.", name));
+                    LOGGER.warning(() -> String.format("Unknown listener %s. Pls check the name spell. Configuration section path is %s", name, listenerCfg.getCurrentPath()));
                     continue;
                 }
                 BiConsumer<MenuItemClick, Map<String, Object>> listener = registeredListeners.get(name.toLowerCase()).getListener();
