@@ -59,9 +59,9 @@ public class DefaultPlaceholderMapperTest {
         applied.accept(click, payload);
         System.out.println(payload.get("second"));
         assertEquals("PLayer name ${player} , player health ${health}", payload.get("second"));
-        assertEquals("PLayer name hyndo , player health 18.0", mutableString);
+        assertEquals("PLayer name hyndo , player health 18", mutableString);
         applied.accept(click2, payload);
-        assertEquals("PLayer name smatavon , player health 19.0", mutableString);
+        assertEquals("PLayer name smatavon , player health 19", mutableString);
         assertTrue(called);
 
     }
