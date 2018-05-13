@@ -183,12 +183,7 @@ public class ItemStackBuilder {
         }
 
         private ItemMeta build(ItemStack itemStack) {
-            ItemMeta metaToUse;
-            if(userMeta != null) {
-                metaToUse = userMeta;
-            } else {
-                metaToUse = itemStack.getItemMeta();
-            }
+            ItemMeta metaToUse = userMeta != null ? userMeta : itemStack.getItemMeta();
             metaToUse.setLore(lore);
             if(name != null) {
                 metaToUse.setDisplayName(name);
