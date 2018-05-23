@@ -18,7 +18,7 @@ import static ru.hyndo.sightmenu.util.ColorUtil.color;
 public class ItemStackBuilder {
 
     private Material material;
-    private int amount;
+    private int amount = 1;
     private short data;
     private MaterialData materialData;
     private ItemStackItemMetaBuilder metaBuilder;
