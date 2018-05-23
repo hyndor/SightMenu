@@ -13,7 +13,6 @@ import ru.hyndo.sightmenu.MenuApiInstance;
 import ru.hyndo.sightmenu.MenuOpenProcessors;
 import ru.hyndo.sightmenu.MenuTemplate;
 import ru.hyndo.sightmenu.item.MenuIcon;
-import ru.hyndo.signmenu.example.todelete.ParticleTest;
 
 import java.io.File;
 
@@ -28,7 +27,6 @@ public class SightMenuExamplePlugin extends JavaPlugin implements Listener {
         apiInstance = MenuApi.prepare(this);
         saveResource("menu_loader_example.yml", false);
         Bukkit.getPluginManager().registerEvents(this, this);
-        Bukkit.getPluginManager().registerEvents(new ParticleTest(this), this);
         Bukkit.getPluginManager().registerEvents(new MenuLoaderExample(apiInstance, YamlConfiguration.loadConfiguration(new File(getDataFolder(), "menu_loader_example.yml"))), this);
         initSingleTemplate();
     }
