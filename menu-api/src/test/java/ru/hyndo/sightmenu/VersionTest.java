@@ -1,6 +1,5 @@
 package ru.hyndo.sightmenu;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.junit.Test;
 import ru.hyndo.sightmenu.util.MinecraftVersion;

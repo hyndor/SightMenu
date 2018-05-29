@@ -2,6 +2,8 @@ package ru.hyndo.sightmenu.util;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ComparisonChain;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 
@@ -177,10 +179,7 @@ public class MinecraftVersion implements Comparable<MinecraftVersion>, Serializa
     }
 
     public boolean isAtLeast( MinecraftVersion other ) {
-        if ( other == null )
-            return false;
-
-        return compareTo( other ) >= 0;
+        return other != null && compareTo( other ) >= 0;
     }
 
     @Override
@@ -193,9 +192,11 @@ public class MinecraftVersion implements Comparable<MinecraftVersion>, Serializa
         if ( obj instanceof MinecraftVersion ) {
             MinecraftVersion other = ( MinecraftVersion ) obj;
 
-            return getMajor() == other.getMajor() &&
-                    getMinor() == other.getMinor() &&
-                    getBuild() == other.getBuild();
+            return new EqualsBuilder()
+                    .append( major, other.major )
+                    .append( minor, other.minor )
+                    .append( build, other.build )
+                    .isEquals();
         }
 
         return false;
@@ -203,7 +204,11 @@ public class MinecraftVersion implements Comparable<MinecraftVersion>, Serializa
 
     @Override
     public int hashCode( ) {
-        return Objects.hashCode( getMajor(), getMinor(), getBuild() );
+        return new HashCodeBuilder()
+                .append( major )
+                .append( minor )
+                .append( build )
+                .toHashCode();
     }
 
     @Override
