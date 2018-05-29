@@ -34,3 +34,26 @@ menu:
           - "&aFirst green line"
           - "&cSecond red line"
         unbreakable: true
+    richItemWithXY:
+      x: 5
+      y: 2
+      listeners:
+        richMaker:
+          type: commandExecutor
+          payload:
+            command: 'eco give ${player} 1'
+            executor: 'console'
+        richNotifier:
+          type: messageSender
+          payload:
+            message: "&aYou just got 1$"
+        closer:
+           type: close
+      itemStack:
+        name: "&aRich item"
+        amount: 2
+        material: DIAMOND
+        lore:
+          - "&aFirst green line"
+          - "&cSecond red line"
+        unbreakable: true

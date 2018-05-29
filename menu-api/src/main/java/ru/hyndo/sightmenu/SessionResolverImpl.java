@@ -6,6 +6,7 @@ import com.google.common.collect.Multimap;
 import org.bukkit.entity.Player;
 import ru.hyndo.sightmenu.paginated.PaginatedMenuSession;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -19,37 +20,41 @@ public class SessionResolverImpl implements SessionResolver {
     private Map<Player, PaginatedMenuSession> paginatedSessions = new WeakHashMap<>();
 
 
-    SessionResolverImpl() {
+    SessionResolverImpl( ) {
     }
 
     @Override
-    public Collection<MenuSession> findAllByTemplate(MenuTemplate menuTemplate) {
-        return ImmutableSet.copyOf(activeSessionsByTemplates.get(menuTemplate));
+    public Collection<MenuSession> resolveSessions( MenuTemplate menuTemplate ) {
+        return ImmutableSet.copyOf( activeSessionsByTemplates.get( menuTemplate ) );
     }
 
     @Override
-    public Optional<MenuSession> getSession(Player player) {
-        return Optional.ofNullable(playerSessions.get(player));
+    public Optional<MenuSession> resolveSession( Player player ) {
+        return Optional.ofNullable( playerSessions.get( player ) );
     }
 
     @Override
-    public Optional<PaginatedMenuSession> getLastPaginatedSession(Player player) {
-        return Optional.ofNullable(paginatedSessions.get(player));
+    public Optional<PaginatedMenuSession> resolveLastPaginatedSession( Player player ) {
+        return Optional.ofNullable( paginatedSessions.get( player ) );
     }
 
-    void addNewPaginatedSession(PaginatedMenuSession session) {
-        paginatedSessions.put(session.getOwner(), session);
+    void addNewPaginatedSession( PaginatedMenuSession session ) {
+        paginatedSessions.put( session.getOwner(), session );
     }
 
-    void addNewSession(MenuSession session) {
-        activeSessionsByTemplates.put(session.getTemplate(), session);
-        playerSessions.put(session.getOwner(), session);
+    void addNewSession( @Nonnull MenuSession session ) {
+        activeSessionsByTemplates.put( session.getTemplate(), session );
+        playerSessions.put( session.getOwner(), session );
     }
 
+    @Override
+    public void sessionInactivated( @Nonnull Player player ) {
+        resolveSession( player ).ifPresent( this::onInactiveSession );
+    }
 
-    void onInactiveSession(MenuSession session) {
-        activeSessionsByTemplates.remove(session.getOwner(), session);
-        playerSessions.remove(session.getOwner());
+    private void onInactiveSession( MenuSession session ) {
+        activeSessionsByTemplates.remove( session.getOwner(), session );
+        playerSessions.remove( session.getOwner() );
     }
 
 }

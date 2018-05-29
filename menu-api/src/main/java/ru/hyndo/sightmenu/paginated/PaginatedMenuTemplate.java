@@ -6,12 +6,12 @@ import ru.hyndo.sightmenu.MenuTemplate;
 import java.util.List;
 import java.util.function.Supplier;
 
-public interface PaginatedMenuTemplate {
+public interface PaginatedMenuTemplate extends Iterable<MenuTemplate> {
 
-    MenuTemplate mainPage();
+    MenuTemplate mainPage( );
 
-    List<MenuTemplate> allPages();
+    List<MenuTemplate> allPages( );
 
-    Supplier<InventorySwitcher> switcherSupplier();
+    Supplier<InventorySwitcher> switcherSupplier( );
 
 }

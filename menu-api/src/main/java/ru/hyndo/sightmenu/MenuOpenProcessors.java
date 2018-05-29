@@ -18,7 +18,7 @@ public class MenuOpenProcessors {
     /**
      * @return menu opener, which shows every item immediately
      */
-    public static MenuOpenProcessor standardOpen() {
+    public static MenuOpenProcessor standardOpen( ) {
         return StandardMenuOpenProcessor.INSTANCE;
     }
 
@@ -27,25 +27,25 @@ public class MenuOpenProcessors {
         INSTANCE;
 
         @Override
-        public OpenProcessorResponse apply(MenuSession menu, Consumer<Inventory> listener) {
+        public OpenProcessorResponse apply( MenuSession menu, Consumer<Inventory> listener ) {
             Map<Integer, MenuItem> indexes = new HashMap<>();
-            Inventory inv = Bukkit.createInventory(menu, menu.getTemplate().getRows() * 9, color(menu.getTemplate().getName()));
-            for(MenuItem item : menu.getTemplate().getItems()){
-                IconRequest request = new IconRequest(menu.getOwner(), menu);
-                MenuIcon icon = item.getIcon(request);
-                if(icon.getIndex() < 0 || icon.getIndex() >= menu.getTemplate().getRows() * 9){
+            Inventory inv = Bukkit.createInventory( menu, menu.getTemplate().getRows() * 9, color( menu.getTemplate().getName() ) );
+            for ( MenuItem item : menu.getTemplate().getItems() ) {
+                IconRequest request = new IconRequest( menu.getOwner(), menu );
+                MenuIcon icon = item.getIcon( request );
+                if ( icon.getIndex() < 0 || icon.getIndex() >= menu.getTemplate().getRows() * 9 ) {
                     continue;
                 }
-                inv.setItem(icon.getIndex(), icon.getItemStack());
-                indexes.put(icon.getIndex(), item);
+                inv.setItem( icon.getIndex(), icon.getItemStack() );
+                indexes.put( icon.getIndex(), item );
             }
-            menu.getOwner().openInventory(inv);
-            listener.accept(inv);
-            return new OpenProcessorResponse(inv, indexes);
+            menu.getOwner().openInventory( inv );
+            listener.accept( inv );
+            return new OpenProcessorResponse( inv, indexes );
         }
 
         @Override
-        public String toString() {
+        public String toString( ) {
             return "MenuOpenProcessors.standardOpen()";
         }
     }

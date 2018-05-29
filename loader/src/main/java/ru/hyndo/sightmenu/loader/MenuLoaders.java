@@ -27,93 +27,93 @@ import java.util.stream.Collectors;
 
 public class MenuLoaders {
 
-    private static final Logger LOGGER = Logger.getLogger(MenuLoaders.class.getName());
+    private static final Logger LOGGER = Logger.getLogger( MenuLoaders.class.getName() );
 
     private MenuApiInstance apiInstance;
 
-    private MenuLoaders(MenuApiInstance apiInstance) {
+    private MenuLoaders( MenuApiInstance apiInstance ) {
         this.apiInstance = apiInstance;
     }
 
-    public static MenuLoaders create(MenuApiInstance apiInstance) {
-        return new MenuLoaders(apiInstance);
+    public static MenuLoaders create( MenuApiInstance apiInstance ) {
+        return new MenuLoaders( apiInstance );
     }
 
-    public MenuLoader<ConfigurationSection> yamlMenuLoader(Function<ConfigurationSection, MenuItem> itemSerializer) {
-        return new SimpleYamlMenuLoader(apiInstance, itemSerializer);
+    public MenuLoader<ConfigurationSection> yamlMenuLoader( Function<ConfigurationSection, MenuItem> itemSerializer ) {
+        return new SimpleYamlMenuLoader( apiInstance, itemSerializer );
     }
 
-    public Function<ConfigurationSection, ItemStack> defaultItemStackSerializer() {
+    public Function<ConfigurationSection, ItemStack> defaultItemStackSerializer( ) {
         return DefaultItemStackSerializer.INSTANCE;
     }
 
-    public Function<ConfigurationSection, MenuItem> perPlayerMenuItemSerializer() {
-        return perPlayerMenuItemSerializer(defaultItemStackSerializer(), ClickListenerRegistry.STANDARD_PREDEFINED_REGISTRY);
+    public Function<ConfigurationSection, MenuItem> perPlayerMenuItemSerializer( ) {
+        return perPlayerMenuItemSerializer( defaultItemStackSerializer(), ClickListenerRegistry.STANDARD_PREDEFINED_REGISTRY );
     }
 
-    public Function<ConfigurationSection, MenuItem> perPlayerMenuItemSerializer(Function<ConfigurationSection, ItemStack> itemStackSerializer,
-                                                                                ListenerRegistry<String, BiConsumer<MenuItemClick, Map<String, Object>>> registry) {
-        return new PerPlayerMenuItemSerializer(apiInstance, itemStackSerializer, registry);
+    public Function<ConfigurationSection, MenuItem> perPlayerMenuItemSerializer( Function<ConfigurationSection, ItemStack> itemStackSerializer,
+                                                                                 ListenerRegistry<String, BiConsumer<MenuItemClick, Map<String, Object>>> registry ) {
+        return new PerPlayerMenuItemSerializer( apiInstance, itemStackSerializer, registry );
     }
 
-    public Function<ConfigurationSection, MenuItem> cachedMenuItemSerializer() {
-        return cachedMenuItemSerializer(defaultItemStackSerializer());
+    public Function<ConfigurationSection, MenuItem> cachedMenuItemSerializer( ) {
+        return cachedMenuItemSerializer( defaultItemStackSerializer() );
     }
 
-    public Function<ConfigurationSection, MenuItem> cachedMenuItemSerializer(Function<ConfigurationSection, ItemStack> itemStackSerializer) {
-        return new CachedMenuItemSerializer(apiInstance, itemStackSerializer);
+    public Function<ConfigurationSection, MenuItem> cachedMenuItemSerializer( Function<ConfigurationSection, ItemStack> itemStackSerializer ) {
+        return new CachedMenuItemSerializer( apiInstance, itemStackSerializer );
     }
 
     private enum DefaultItemStackSerializer implements Function<ConfigurationSection, ItemStack> {
         INSTANCE;
 
         @Override
-        public ItemStack apply(ConfigurationSection itemStackCfg) {
-            int amount = itemStackCfg.getInt("amount", 1);
-            int data = itemStackCfg.getInt("data", 0);
-            String material = itemStackCfg.getString("material");
-            ConfigurationSection enchantmentsCfg = itemStackCfg.getConfigurationSection("enchantments");
-            Map<Enchantment, Integer> enchantments = getEnchantments(enchantmentsCfg);
-            List<ItemFlag> itemFlags = getFlags(itemStackCfg.getConfigurationSection("itemFlags"));
-            List<String> lore = ColorUtil.format((lore = itemStackCfg.getStringList("lore")) == null ? new ArrayList<>() : lore);
-            String displayName = itemStackCfg.getString("name");
-            boolean unbreakable = itemStackCfg.getBoolean("unbreakable", false);
-            if (material == null) {
-                throw new IllegalArgumentException("Can not construct menuItem without material. Please specify material. Example: \"material: STONE\"");
+        public ItemStack apply( ConfigurationSection itemStackCfg ) {
+            int amount = itemStackCfg.getInt( "amount", 1 );
+            int data = itemStackCfg.getInt( "data", 0 );
+            String material = itemStackCfg.getString( "material" );
+            ConfigurationSection enchantmentsCfg = itemStackCfg.getConfigurationSection( "enchantments" );
+            Map<Enchantment, Integer> enchantments = getEnchantments( enchantmentsCfg );
+            List<ItemFlag> itemFlags = getFlags( itemStackCfg.getConfigurationSection( "itemFlags" ) );
+            List<String> lore = ColorUtil.format( ( lore = itemStackCfg.getStringList( "lore" ) ) == null ? new ArrayList<>() : lore );
+            String displayName = itemStackCfg.getString( "name" );
+            boolean unbreakable = itemStackCfg.getBoolean( "unbreakable", false );
+            if ( material == null ) {
+                throw new IllegalArgumentException( "Can not construct menuItem without material. Please specify material. Example: \"material: STONE\"" );
             }
             ItemStackBuilder.ItemStackItemMetaBuilder builder = ItemStackBuilder
                     .create()
-                    .setAmount(amount)
-                    .setData((short) data)
-                    .setMaterial(Material.getMaterial(material.toUpperCase()))
-                    .setEnchantments(enchantments)
+                    .setAmount( amount )
+                    .setData( ( short ) data )
+                    .setMaterial( Material.getMaterial( material.toUpperCase() ) )
+                    .setEnchantments( enchantments )
                     .withItemMeta()
-                    .setItemFlags(itemFlags)
-                    .setLore(lore)
-                    .setName(displayName)
-                    .setUnbreakable(unbreakable);
-            if (displayName != null) {
-                builder.setName(ColorUtil.color(displayName));
+                    .setItemFlags( itemFlags )
+                    .setLore( lore )
+                    .setName( displayName )
+                    .setUnbreakable( unbreakable );
+            if ( displayName != null ) {
+                builder.setName( ColorUtil.color( displayName ) );
             }
             return builder.and().build();
         }
 
-        private List<ItemFlag> getFlags(ConfigurationSection cfg) {
-            return Optional.ofNullable(cfg).map(a -> a.getStringList("flags")).map(list -> list.stream()
-                    .map(String::toUpperCase)
-                    .map(ItemFlag::valueOf)
-                    .collect(Collectors.toList())).orElse(new ArrayList<>());
+        private List<ItemFlag> getFlags( ConfigurationSection cfg ) {
+            return Optional.ofNullable( cfg ).map( a -> a.getStringList( "flags" ) ).map( list -> list.stream()
+                    .map( String::toUpperCase )
+                    .map( ItemFlag::valueOf )
+                    .collect( Collectors.toList() ) ).orElse( new ArrayList<>() );
         }
 
-        private Map<Enchantment, Integer> getEnchantments(ConfigurationSection cfg) {
-            if (cfg == null) {
+        private Map<Enchantment, Integer> getEnchantments( ConfigurationSection cfg ) {
+            if ( cfg == null ) {
                 return new HashMap<>();
             }
             Map<Enchantment, Integer> enchantments = new HashMap<>();
-            cfg.getKeys(false)
+            cfg.getKeys( false )
                     .stream()
-                    .map(cfg::getConfigurationSection)
-                    .forEach(enchCfg -> enchantments.put(Enchantment.getByName(enchCfg.getString("enchantment")), enchCfg.getInt("level")));
+                    .map( cfg::getConfigurationSection )
+                    .forEach( enchCfg -> enchantments.put( Enchantment.getByName( enchCfg.getString( "enchantment" ) ), enchCfg.getInt( "level" ) ) );
             return enchantments;
         }
 
@@ -124,33 +124,33 @@ public class MenuLoaders {
         private MenuApiInstance apiInstance;
         private Function<ConfigurationSection, MenuItem> menuItemSerializer;
 
-        SimpleYamlMenuLoader(MenuApiInstance apiInstance, Function<ConfigurationSection, MenuItem> menuItemSerializer) {
-            Objects.requireNonNull(apiInstance, "null api instance");
-            Objects.requireNonNull(menuItemSerializer, "null api menu item serializer");
+        SimpleYamlMenuLoader( MenuApiInstance apiInstance, Function<ConfigurationSection, MenuItem> menuItemSerializer ) {
+            Objects.requireNonNull( apiInstance, "null api instance" );
+            Objects.requireNonNull( menuItemSerializer, "null api menu item serializer" );
             this.apiInstance = apiInstance;
             this.menuItemSerializer = menuItemSerializer;
         }
 
         @Override
-        public MenuTemplate apply(ConfigurationSection cfg) {
-            ConfigurationSection meta = cfg.getConfigurationSection("meta");
-            Preconditions.checkNotNull(meta, "meta section doesn't exist at path " + cfg.getCurrentPath());
-            String name = ColorUtil.color(meta.getString("name"));
-            int rows = meta.getInt("rows");
-            ConfigurationSection itemsCfg = cfg.getConfigurationSection("items");
-            Preconditions.checkNotNull(itemsCfg, "items section doesn't exist at path " + cfg.getCurrentPath());
+        public MenuTemplate apply( ConfigurationSection cfg ) {
+            ConfigurationSection meta = cfg.getConfigurationSection( "meta" );
+            Preconditions.checkNotNull( meta, "meta section doesn't exist at path " + cfg.getCurrentPath() );
+            String name = ColorUtil.color( meta.getString( "name" ) );
+            int rows = meta.getInt( "rows" );
+            ConfigurationSection itemsCfg = cfg.getConfigurationSection( "items" );
+            Preconditions.checkNotNull( itemsCfg, "items section doesn't exist at path " + cfg.getCurrentPath() );
             return apiInstance
                     .templateBuilder()
                     .singleTemplate()
-                    .setName(name)
-                    .setOpenProcessor(MenuOpenProcessors.standardOpen())
-                    .setRows(rows)
-                    .withItems(itemsCfg
-                            .getKeys(false)
+                    .setName( name )
+                    .setOpenProcessor( MenuOpenProcessors.standardOpen() )
+                    .setRows( rows )
+                    .withItems( itemsCfg
+                            .getKeys( false )
                             .stream()
-                            .map(itemsCfg::getConfigurationSection)
-                            .map(menuItemSerializer)
-                            .collect(Collectors.toSet()))
+                            .map( itemsCfg::getConfigurationSection )
+                            .map( menuItemSerializer )
+                            .collect( Collectors.toSet() ) )
                     .createMenuTemplateImpl();
         }
 
@@ -158,21 +158,21 @@ public class MenuLoaders {
 
     private static class CachedMenuItemSerializer extends AbstractMenuItemSerializer {
 
-        public CachedMenuItemSerializer(MenuApiInstance apiInstance,
-                                        Function<ConfigurationSection, ItemStack> itemStackSerializer) {
-            super(apiInstance, itemStackSerializer);
+        public CachedMenuItemSerializer( MenuApiInstance apiInstance,
+                                         Function<ConfigurationSection, ItemStack> itemStackSerializer ) {
+            super( apiInstance, itemStackSerializer );
         }
 
         @Override
-        public MenuItem apply(ConfigurationSection cfg) {
-            ConfigurationSection itemStackCfg = cfg.getConfigurationSection("itemStack");
-            Preconditions.checkNotNull(itemStackCfg, String.format("Invalid configuration section at path %s. itemStack configuration section doesn't exist", cfg.getCurrentPath()));
-            ItemStack itemStack = itemStackSerializer.apply(itemStackCfg);
-            MenuIcon menuIcon = new MenuIcon(itemStack, cfg.getInt("slot", 0));
+        public MenuItem apply( ConfigurationSection cfg ) {
+            ConfigurationSection itemStackCfg = cfg.getConfigurationSection( "itemStack" );
+            Preconditions.checkNotNull( itemStackCfg, String.format( "Invalid configuration section at path %s. itemStack configuration section doesn't exist", cfg.getCurrentPath() ) );
+            ItemStack itemStack = itemStackSerializer.apply( itemStackCfg );
+            MenuIcon menuIcon = new MenuIcon( itemStack, cfg.getInt( "slot", 0 ) );
             return apiInstance
                     .itemBuilder()
                     .cachedItem()
-                    .setMenuIcon(menuIcon)
+                    .setMenuIcon( menuIcon )
                     .build();
         }
 
@@ -182,10 +182,10 @@ public class MenuLoaders {
         MenuApiInstance apiInstance;
         Function<ConfigurationSection, ItemStack> itemStackSerializer;
 
-        AbstractMenuItemSerializer(MenuApiInstance apiInstance,
-                                   Function<ConfigurationSection, ItemStack> itemStackSerializer) {
-            Objects.requireNonNull(apiInstance, "null api instance");
-            Objects.requireNonNull(itemStackSerializer, "null api itemStack serializer");
+        AbstractMenuItemSerializer( MenuApiInstance apiInstance,
+                                    Function<ConfigurationSection, ItemStack> itemStackSerializer ) {
+            Objects.requireNonNull( apiInstance, "null api instance" );
+            Objects.requireNonNull( itemStackSerializer, "null api itemStack serializer" );
             this.apiInstance = apiInstance;
             this.itemStackSerializer = itemStackSerializer;
         }
@@ -195,60 +195,72 @@ public class MenuLoaders {
 
         private ListenerRegistry<String, BiConsumer<MenuItemClick, Map<String, Object>>> registry;
 
-        public PerPlayerMenuItemSerializer(MenuApiInstance apiInstance,
-                                           Function<ConfigurationSection, ItemStack> itemStackSerializer,
-                                           ListenerRegistry<String, BiConsumer<MenuItemClick, Map<String, Object>>> registry) {
-            super(apiInstance, itemStackSerializer);
+        public PerPlayerMenuItemSerializer( MenuApiInstance apiInstance,
+                                            Function<ConfigurationSection, ItemStack> itemStackSerializer,
+                                            ListenerRegistry<String, BiConsumer<MenuItemClick, Map<String, Object>>> registry ) {
+            super( apiInstance, itemStackSerializer );
             this.registry = registry;
         }
 
         @Override
-        public MenuItem apply(ConfigurationSection cfg) {
-            ItemStack itemStack = itemStackSerializer.apply(cfg.getConfigurationSection("itemStack"));
-            MenuIcon menuIcon = new MenuIcon(itemStack, cfg.getInt("slot"));
+        public MenuItem apply( ConfigurationSection cfg ) {
+            ItemStack itemStack = itemStackSerializer.apply( cfg.getConfigurationSection( "itemStack" ) );
+            int slot = cfg.getInt( "slot", -1 ) - 1;
+
+            if ( slot == -2 ) { //Calculate by xy
+                int x = cfg.getInt( "x", -1 );
+                int y = cfg.getInt( "y", -1 );
+
+                slot = ( y - 1 ) * 9 + ( x - 1 );
+            }
+
+            if ( slot < 0 ) {
+                throw new IllegalArgumentException( "Slot value is negative or undefined: " + slot );
+            }
+
+            MenuIcon menuIcon = new MenuIcon( itemStack, slot );
             return apiInstance
                     .itemBuilder()
                     .perPlayerItem()
-                    .withClickListener(collectClickListeners(cfg.getConfigurationSection("listeners")))
-                    .setIconRequestConsumer(iconRequest -> menuIcon)
+                    .withClickListener( collectClickListeners( cfg.getConfigurationSection( "listeners" ) ) )
+                    .setIconRequestConsumer( iconRequest -> menuIcon )
                     .build();
         }
 
-        private Consumer<MenuItemClick> collectClickListeners(ConfigurationSection cfg) {
+        private Consumer<MenuItemClick> collectClickListeners( ConfigurationSection cfg ) {
             Consumer<MenuItemClick> consumer = a -> {
             };
-            if (cfg == null) {
+            if ( cfg == null ) {
                 return consumer;
             }
             Map<String, RegisteredListener<String, BiConsumer<MenuItemClick, Map<String, Object>>>> registeredListeners = registry.getRegisteredListeners();
-            for (String listenerKey : cfg.getKeys(false)) {
-                ConfigurationSection listenerCfg = cfg.getConfigurationSection(listenerKey);
-                String name = listenerCfg.getString("type");
-                if (name == null) {
-                    LOGGER.warning(() -> String.format("Listener type isn't specified at configuration section %s", listenerCfg.getCurrentPath()));
+            for ( String listenerKey : cfg.getKeys( false ) ) {
+                ConfigurationSection listenerCfg = cfg.getConfigurationSection( listenerKey );
+                String name = listenerCfg.getString( "type" );
+                if ( name == null ) {
+                    LOGGER.warning( ( ) -> String.format( "Listener type isn't specified at configuration section %s", listenerCfg.getCurrentPath() ) );
                     continue;
                 }
-                if (registeredListeners.get(name.toLowerCase()) == null) {
-                    LOGGER.warning(() -> String.format("Unknown listener %s. Pls check the name spell. Configuration section path is %s", name, listenerCfg.getCurrentPath()));
+                if ( registeredListeners.get( name.toLowerCase() ) == null ) {
+                    LOGGER.warning( ( ) -> String.format( "Unknown listener %s. Pls check the name spell. Configuration section path is %s", name, listenerCfg.getCurrentPath() ) );
                     continue;
                 }
-                BiConsumer<MenuItemClick, Map<String, Object>> listener = registeredListeners.get(name.toLowerCase()).getListener();
-                Map<String, Object> payload = collectPayload(listenerCfg.getConfigurationSection("payload"));
-                consumer = consumer.andThen(FunctionUtil.bindLast(listener, payload));
+                BiConsumer<MenuItemClick, Map<String, Object>> listener = registeredListeners.get( name.toLowerCase() ).getListener();
+                Map<String, Object> payload = collectPayload( listenerCfg.getConfigurationSection( "payload" ) );
+                consumer = consumer.andThen( FunctionUtil.bindLast( listener, payload ) );
             }
             return consumer;
         }
 
-        private Map<String, Object> collectPayload(ConfigurationSection cfg) {
-            if (cfg == null) {
+        private Map<String, Object> collectPayload( ConfigurationSection cfg ) {
+            if ( cfg == null ) {
                 return new HashMap<>();
             }
             Map<String, Object> payload = new HashMap<>();
-            cfg.getKeys(false).forEach(key -> payload.put(key, cfg.get(key)));
+            cfg.getKeys( false ).forEach( key -> payload.put( key, cfg.get( key ) ) );
             return payload;
         }
 
     }
-
 
 }

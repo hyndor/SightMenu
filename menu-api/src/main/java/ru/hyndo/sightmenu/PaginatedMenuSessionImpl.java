@@ -13,7 +13,6 @@ class PaginatedMenuSessionImpl implements PaginatedMenuSession, Consumer<Map<Str
 
     private Player owner;
     private PaginatedMenuTemplate template;
-    private MenuSession currentPage;
     private MenuFactory menuFactory;
     private InventorySwitcher switcher;
 

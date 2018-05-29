@@ -33,7 +33,7 @@ public class SessionResolverImplTest {
         sessionResolver.addNewSession(vasyaSes);
         MenuSession petyaSes = apiInstance.getMenuFactory().createSingleSession(petya, randomTemplate);
         sessionResolver.addNewSession(petyaSes);
-        Collection<MenuSession> allByTemplate = sessionResolver.findAllByTemplate(randomTemplate);
+        Collection<MenuSession> allByTemplate = sessionResolver.resolveSessions(randomTemplate);
         assertEquals(allByTemplate.size(), 2);
         assertTrue(allByTemplate.contains(vasyaSes));
         assertTrue(allByTemplate.contains(petyaSes));
@@ -48,7 +48,7 @@ public class SessionResolverImplTest {
                 .withPage(veryRandomTemplate)
                 .build();
         PaginatedMenuSession paginatedSession = apiInstance.getMenuFactory().createPaginatedSession(vasya, paginatedMenuTemplate);
-        Optional<PaginatedMenuSession> lastPaginatedSession = sessionResolver.getLastPaginatedSession(vasya);
+        Optional<PaginatedMenuSession> lastPaginatedSession = sessionResolver.resolveLastPaginatedSession(vasya);
         assertTrue(lastPaginatedSession.isPresent());
         assertEquals(lastPaginatedSession.get(), paginatedSession);
     }
@@ -59,10 +59,10 @@ public class SessionResolverImplTest {
         sessionResolver.addNewSession(vasyaSes);
         MenuSession petyaSes = apiInstance.getMenuFactory().createSingleSession(petya, randomTemplate);
         sessionResolver.addNewSession(petyaSes);
-        Optional<MenuSession> session = sessionResolver.getSession(vasya);
+        Optional<MenuSession> session = sessionResolver.resolveSession(vasya);
         assertTrue(session.isPresent());
         assertEquals(session.get(), vasyaSes);
-        Optional<MenuSession> session1 = sessionResolver.getSession(petya);
+        Optional<MenuSession> session1 = sessionResolver.resolveSession(petya);
         assertTrue(session1.isPresent());
         assertEquals(session1.get(), petyaSes);
     }

@@ -7,11 +7,13 @@ import java.util.Map;
 
 public class DefaultPlaceholderMapper extends AbstractPlaceHolderMapper {
 
+    public static AbstractPlaceHolderMapper INSTANCE = new DefaultPlaceholderMapper();
+
     @Override
-    protected void populateMap(MenuItemClick click, Map<String, Object> payload, Map<String, String> values) {
+    protected void populateMap( MenuItemClick click, Map<String, Object> payload, Map<String, String> values ) {
         Player player = click.getPlayer();
-        values.put("player", player.getName());
-        values.put("health", String.valueOf((int) player.getHealth()));
+        values.put( "player", player.getName() );
+        values.put( "health", String.valueOf( ( int ) player.getHealth() ) );
     }
 
 }
