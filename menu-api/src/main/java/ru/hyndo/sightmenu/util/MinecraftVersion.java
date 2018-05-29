@@ -10,8 +10,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MinecraftVersion implements Comparable<MinecraftVersion>, Serializable {
-    private static final long serialVersionUID = 1L;
-
     /**
      * Regular expression used to parse version strings.
      */
