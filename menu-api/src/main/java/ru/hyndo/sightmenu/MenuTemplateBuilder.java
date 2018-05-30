@@ -44,6 +44,18 @@ public class MenuTemplateBuilder {
             return this;
         }
 
+        /**
+         * @param menuTemplate to combine with
+         * @return builder, combined with menu template. Such parameters as name, rows and open processor will be overridden from menu template. Items will be merged from current builder and menu template
+         */
+        public SingleMenuTemplateBuilder combineWith(MenuTemplate menuTemplate) {
+            this.name = menuTemplate.getName();
+            this.items.addAll(menuTemplate.getItems());
+            this.rows = menuTemplate.getRows();
+            this.openProcessor = menuTemplate.getOpenProcessor();
+            return this;
+        }
+
         public SingleMenuTemplateBuilder withItem(MenuItem item) {
             Preconditions.checkNotNull(item, "Null item");
             this.items.add(item);
