@@ -182,6 +182,8 @@ public class ItemStackBuilder {
             return this;
         }
 
+        //Use deprecated method to support 1.8 versions
+        @SuppressWarnings("deprecation")
         private ItemMeta build(ItemStack itemStack) {
             ItemMeta metaToUse = userMeta != null ? userMeta : itemStack.getItemMeta();
             metaToUse.setLore(lore);
@@ -189,7 +191,7 @@ public class ItemStackBuilder {
                 metaToUse.setDisplayName(name);
             }
             if(unbreakable) {
-                metaToUse.setUnbreakable(unbreakable);
+                metaToUse.spigot().setUnbreakable(unbreakable);
             }
             if(itemFlags.size() > 0) {
                 metaToUse.addItemFlags(itemFlags.toArray(new ItemFlag[0]));
