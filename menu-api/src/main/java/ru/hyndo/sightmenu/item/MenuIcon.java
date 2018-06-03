@@ -5,13 +5,15 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Objects;
+
 public class MenuIcon {
 
     private ItemStack itemStack;
     private int index;
 
     public MenuIcon(ItemStack itemStack, int index) {
-        this.itemStack = itemStack;
+        this.itemStack = Objects.requireNonNull(itemStack);
         this.index = index;
     }
 
