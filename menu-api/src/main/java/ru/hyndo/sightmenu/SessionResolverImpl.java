@@ -47,8 +47,7 @@ public class SessionResolverImpl implements SessionResolver {
         playerSessions.put( session.getOwner(), session );
     }
 
-    @Override
-    public void sessionInactivated( @Nonnull Player player ) {
+    void sessionInactivated( @Nonnull Player player ) {
         resolveSession( player ).ifPresent( this::onInactiveSession );
     }
 

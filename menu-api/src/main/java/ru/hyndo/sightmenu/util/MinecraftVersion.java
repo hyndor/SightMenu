@@ -1,6 +1,5 @@
 package ru.hyndo.sightmenu.util;
 
-import com.google.common.base.Objects;
 import com.google.common.collect.ComparisonChain;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -204,7 +203,7 @@ public class MinecraftVersion implements Comparable<MinecraftVersion>, Serializa
 
     @Override
     public int hashCode( ) {
-        return new HashCodeBuilder()
+        return new HashCodeBuilder( 17, 37 )
                 .append( major )
                 .append( minor )
                 .append( build )
@@ -246,9 +245,6 @@ public class MinecraftVersion implements Comparable<MinecraftVersion>, Serializa
 
     private static MinecraftVersion currentVersion;
 
-    public static void setCurrentVersion( MinecraftVersion version ) {
-        currentVersion = version;
-    }
 
     public static MinecraftVersion getCurrentVersion( ) {
         if ( currentVersion == null ) {

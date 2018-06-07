@@ -26,10 +26,4 @@ public interface SessionResolver {
      */
     Optional<PaginatedMenuSession> resolveLastPaginatedSession( Player player );
 
-    /**
-     * Clear all player menu sessions.
-     *
-     * @param player - player
-     */
-    void sessionInactivated( Player player );
 }

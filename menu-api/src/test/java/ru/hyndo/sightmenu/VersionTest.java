@@ -13,9 +13,7 @@ public class VersionTest {
 
     @Test
     public void testVersionComparision( ) {
-        Server bukkitServer = prepareServer( "(MC: 1.8.8)" );
-
-        MinecraftVersion serverVersion = MinecraftVersion.fromServerVersion( bukkitServer.getVersion() );
+        MinecraftVersion serverVersion = MinecraftVersion.fromServerVersion( prepareServer( "(MC: 1.8.8)" ).getVersion() );
 
         assertTrue( serverVersion.isAtLeast( MinecraftVersion.BOUNTIFUL_UPDATE ) );
         assertFalse( serverVersion.isAtLeast( MinecraftVersion.COLOR_UPDATE ) );

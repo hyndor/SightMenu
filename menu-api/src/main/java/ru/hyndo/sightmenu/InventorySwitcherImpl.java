@@ -12,31 +12,29 @@ class InventorySwitcherImpl implements InventorySwitcher {
     private int currentPageGlobalIndex;
     private MenuFactory menuFactory;
 
-    InventorySwitcherImpl() {
+    InventorySwitcherImpl( ) {
     }
 
     @Override
-    public MenuSession switchPrevious() throws IllegalArgumentException {
-        Preconditions.checkState(hasPrevious(), "Can not switch to a non-existent page");
-        MenuTemplate newTemplate = session.getTemplate().allPages().get(--currentPageGlobalIndex);
-        return menuFactory.createSingleSession(session.getOwner(), newTemplate);
+    public MenuSession switchPrevious( ) throws IllegalArgumentException {
+        Preconditions.checkState( hasPrevious(), "Can not switch to a non-existent page" );
+        return switchToPage( --currentPageGlobalIndex );
     }
 
     @Override
-    public MenuSession switchNext() throws IllegalArgumentException {
-        Preconditions.checkState(hasNext(), "Can not switch to a non-existent page");
-        MenuTemplate newTemplate = session.getTemplate().allPages().get(++currentPageGlobalIndex);
-        return menuFactory.createSingleSession(session.getOwner(), newTemplate);
+    public MenuSession switchNext( ) throws IllegalArgumentException {
+        Preconditions.checkState( hasNext(), "Can not switch to a non-existent page" );
+        return switchToPage( ++currentPageGlobalIndex );
     }
 
     @Override
-    public boolean hasPrevious() {
+    public boolean hasPrevious( ) {
         int newIndex = currentPageGlobalIndex - 1;
         return session.getTemplate().allPages().size() > newIndex && newIndex >= 0;
     }
 
     @Override
-    public boolean hasNext() {
+    public boolean hasNext( ) {
         int newIndex = currentPageGlobalIndex + 1;
         return session
                 .getTemplate()
@@ -45,46 +43,45 @@ class InventorySwitcherImpl implements InventorySwitcher {
     }
 
     @Override
-    public boolean hasPage(int pageIndex) {
+    public boolean hasPage( int pageIndex ) {
         return session.getTemplate().allPages().size() > pageIndex;
     }
 
     @Override
-    public MenuSession switchToPage(int pageIndex) throws IllegalArgumentException {
-        if(session.getTemplate().allPages().size() <= pageIndex) {
-            throw new IndexOutOfBoundsException("Unknown page");
+    public MenuSession switchToPage( int pageIndex ) throws IllegalArgumentException {
+        if ( session.getTemplate().allPages().size() <= pageIndex ) {
+            throw new IndexOutOfBoundsException( "Unknown page" );
         }
         this.currentPageGlobalIndex = pageIndex;
-        MenuTemplate newTemplate = session.getTemplate().allPages().get(pageIndex);
-        return menuFactory.createSingleSession(session.getOwner(), newTemplate);
+        MenuTemplate newTemplate = session.getTemplate().allPages().get( pageIndex );
+        return menuFactory.createSingleSession( session.getOwner(), newTemplate );
     }
 
     @Override
-    public Optional<PaginatedMenuSession> getBoundSession() {
-        return Optional.ofNullable(session);
+    public Optional<PaginatedMenuSession> getBoundSession( ) {
+        return Optional.ofNullable( session );
     }
 
     @Override
-    public void bindToSession(PaginatedMenuSession menuSession) {
-        Preconditions.checkState(this.session == null, "Trying to bind session to already binned inventory switcherSupplier. Try to create new instance of inventory switcherSupplier.");
-        setSession(menuSession);
+    public void bindToSession( PaginatedMenuSession menuSession ) {
+        Preconditions.checkState( this.session == null, "Trying to bind session to already binned inventory switcherSupplier. Try to create new instance of inventory switcherSupplier." );
+        setSession( menuSession );
     }
 
     @Override
-    public int currentPageIndex() {
+    public int currentPageIndex( ) {
         return currentPageGlobalIndex;
     }
 
-    void setSession(PaginatedMenuSession session) {
+    void setSession( PaginatedMenuSession session ) {
         PaginatedMenuTemplate template = session.getTemplate();
-        this.currentPageGlobalIndex = template.allPages().indexOf(template.mainPage());
-        if(currentPageGlobalIndex == -1) {
-            throw new IllegalArgumentException("Invalid template. Main page isn't among template's pages");
+        this.currentPageGlobalIndex = template.allPages().indexOf( template.mainPage() );
+        if ( currentPageGlobalIndex == -1 ) {
+            throw new IllegalArgumentException( "Invalid template. Main page isn't among template's pages" );
         }
         this.session = session;
         this.menuFactory = session.getFactory();
     }
-
 
 
 }

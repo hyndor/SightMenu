@@ -14,9 +14,9 @@ import java.util.Optional;
 
 public class MenuListener implements Listener {
 
-    private SessionResolver sessionResolver;
+    private SessionResolverImpl sessionResolver;
 
-    MenuListener( @Nonnull SessionResolver sessionResolver ) {
+    MenuListener( @Nonnull SessionResolverImpl sessionResolver ) {
         this.sessionResolver = sessionResolver;
     }
 
