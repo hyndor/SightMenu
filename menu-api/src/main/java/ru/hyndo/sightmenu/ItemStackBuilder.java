@@ -186,10 +186,11 @@ public class ItemStackBuilder {
                 metaToUse.setDisplayName( name );
             }
 
+            //We take care about bukkit api changes
             if ( MinecraftVersion.getCurrentVersion().isAtLeast( MinecraftVersion.COMBAT_UPDATE ) ) {
                 metaToUse.setUnbreakable( unbreakable );
             } else {
-                // TODO: 29.05.2018 Set unbreakable flag with reflection
+                metaToUse.spigot().setUnbreakable( unbreakable );
             }
 
             if ( itemFlags.size() > 0 ) {
