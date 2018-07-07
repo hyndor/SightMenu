@@ -10,6 +10,7 @@ import ru.hyndo.sightmenu.item.MenuItemClick;
 import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class MenuItemBuilder {
 
@@ -21,29 +22,43 @@ public class MenuItemBuilder {
         return new PerPlayerMenuItemBuilder();
     }
 
-    public abstract static class AbstractMenuItemBuilder {
+    @SuppressWarnings("unchecked cast")
+    public abstract static class AbstractMenuItemBuilder<T extends AbstractMenuItemBuilder<T>> {
 
+        Predicate<IconRequest> available = iconRequest -> true;
 
         Consumer<MenuItemClick> onClick = (click) -> { };
 
         AbstractMenuItemBuilder() {
         }
 
-        AbstractMenuItemBuilder withClickListener(Consumer<MenuItemClick> onClick) {
-            Preconditions.checkNotNull(onClick, "onClick is null");
-            this.onClick = this.onClick.andThen(onClick);
-            return this;
+        public T withAvailableListener(Predicate<IconRequest> isAvailable) {
+            Preconditions.checkNotNull(isAvailable, "isAvailable is null");
+            this.available = this.available.and(isAvailable);
+            return (T) this;
         }
 
-        AbstractMenuItemBuilder withClickListener(Collection<Consumer<MenuItemClick>> onClickList) {
+        public T withAvailableListener(Collection<Predicate<IconRequest>> isAvailableList) {
+            Preconditions.checkNotNull(onClick, "onClick is null");
+            isAvailableList.forEach(iterated -> this.available = this.available.and(iterated));
+            return (T) this;
+        }
+
+        public T withClickListener(Consumer<MenuItemClick> onClick) {
+            Preconditions.checkNotNull(onClick, "onClick is null");
+            this.onClick = this.onClick.andThen(onClick);
+            return (T) this;
+        }
+
+        public T withClickListener(Collection<Consumer<MenuItemClick>> onClickList) {
             Preconditions.checkNotNull(onClick, "onClick is null");
             onClickList.forEach(iterated -> this.onClick = this.onClick.andThen(iterated));
-            return this;
+            return (T) this;
         }
 
     }
 
-    public static class PerPlayerMenuItemBuilder extends AbstractMenuItemBuilder {
+    public static class PerPlayerMenuItemBuilder extends AbstractMenuItemBuilder<PerPlayerMenuItemBuilder> {
 
         private Function<IconRequest, MenuIcon> iconRequestConsumer;
 
@@ -56,24 +71,14 @@ public class MenuItemBuilder {
             return this;
         }
 
-        @Override
-        public PerPlayerMenuItemBuilder withClickListener(Collection<Consumer<MenuItemClick>> onClickList) {
-            return (PerPlayerMenuItemBuilder) super.withClickListener(onClickList);
-        }
-
-        @Override
-        public PerPlayerMenuItemBuilder withClickListener(Consumer<MenuItemClick> onClick) {
-            return (PerPlayerMenuItemBuilder) super.withClickListener(onClick);
-        }
-
         public PerPlayerMenuItem build() {
-            return new PerPlayerMenuItem(onClick, iconRequestConsumer);
+            return new PerPlayerMenuItem(onClick, iconRequestConsumer, available);
         }
 
     }
 
 
-    public static class CachedMenuItemBuilder extends AbstractMenuItemBuilder {
+    public static class CachedMenuItemBuilder extends AbstractMenuItemBuilder<CachedMenuItemBuilder> {
 
         private MenuIcon menuIcon = new MenuIcon(new ItemStack(Material.AIR), 0);
 
@@ -86,18 +91,8 @@ public class MenuItemBuilder {
             return this;
         }
 
-        @Override
-        public CachedMenuItemBuilder withClickListener(Collection<Consumer<MenuItemClick>> onClickList) {
-            return (CachedMenuItemBuilder) super.withClickListener(onClickList);
-        }
-
-        @Override
-        public CachedMenuItemBuilder withClickListener(Consumer<MenuItemClick> onClick) {
-            return (CachedMenuItemBuilder) super.withClickListener(onClick);
-        }
-
         public CachedMenuItem build() {
-            return new CachedMenuItem(onClick, menuIcon);
+            return new CachedMenuItem(onClick, menuIcon, available);
         }
 
 

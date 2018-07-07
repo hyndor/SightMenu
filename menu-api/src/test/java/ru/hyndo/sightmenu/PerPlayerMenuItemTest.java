@@ -10,6 +10,7 @@ import ru.hyndo.sightmenu.item.IconRequest;
 import ru.hyndo.sightmenu.item.MenuIcon;
 
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static org.junit.Assert.assertEquals;
 
@@ -31,8 +32,16 @@ public class PerPlayerMenuItemTest {
         }
     };
 
+    @Spy
+    Predicate<IconRequest> availableListener = new Predicate<IconRequest>() {
+        @Override
+        public boolean test(IconRequest iconRequest) {
+            return true;
+        }
+    };
+
     private PerPlayerMenuItem menuItem = new PerPlayerMenuItem(click -> {
-    }, iconRequestConsumer);
+    }, iconRequestConsumer, availableListener);
 
 
     @Test

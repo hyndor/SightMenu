@@ -30,17 +30,21 @@ public class MenuOpenProcessors {
         public OpenProcessorResponse apply(MenuSession menu, Consumer<Inventory> listener) {
             Map<Integer, MenuItem> indexes = new HashMap<>();
             Inventory inv = Bukkit.createInventory(menu, menu.getTemplate().getRows() * 9, color(menu.getTemplate().getName()));
+
             for(MenuItem item : menu.getTemplate().getItems()){
                 IconRequest request = new IconRequest(menu.getOwner(), menu);
                 MenuIcon icon = item.getIcon(request);
-                if(icon.getIndex() < 0 || icon.getIndex() >= menu.getTemplate().getRows() * 9){
+
+                if(icon.getIndex() < 0 || icon.getIndex() >= menu.getTemplate().getRows() * 9 || !item.isAvailable().test(request))
                     continue;
-                }
+
                 inv.setItem(icon.getIndex(), icon.getItemStack());
                 indexes.put(icon.getIndex(), item);
             }
+
             menu.getOwner().openInventory(inv);
             listener.accept(inv);
+
             return new OpenProcessorResponse(inv, indexes);
         }
 
