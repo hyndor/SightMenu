@@ -7,6 +7,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
+import ru.hyndo.sightmenu.item.IconRequest;
 import ru.hyndo.sightmenu.item.MenuItem;
 import ru.hyndo.sightmenu.item.MenuItemClick;
 
@@ -33,7 +34,8 @@ public class MenuListener implements Listener {
             MenuTemplate template = menuSession.getTemplate();
             Optional<MenuItem> itemOptional = menuSession.getItemByIndex(event.getRawSlot());
             itemOptional.ifPresent(menuItem -> {
-                menuItem.onClick().accept(new MenuItemClick(player, menuSession, event));
+                if (menuItem.isAvailable().test(new IconRequest(player, menuSession)))
+                    menuItem.onClick().accept(new MenuItemClick(player, menuSession, event));
             });
             event.setCancelled(true);
         });
