@@ -33,7 +33,7 @@ public class MenuIconBuilder {
     }
 
     public MenuIcon build() {
-        return new MenuIcon(null, this.index);
+        return new MenuIcon(itemStack, this.index);
     }
 
 }

@@ -65,4 +65,10 @@ public class MenuIcon {
                 ", index=" + index +
                 '}';
     }
+
+    public static MenuIcon fromCoordinates(ItemStack itemStack, int x, int y) {
+        return new MenuIcon(itemStack, x * 9 + y);
+    }
+
+
 }

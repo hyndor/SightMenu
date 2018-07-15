@@ -31,6 +31,8 @@ public class ItemStackBuilder {
     };
     private Map<Enchantment, Integer> enchantments = new HashMap<>();
 
+    private ItemStack userItem;
+
     private ItemStackBuilder() {
 
     }
@@ -46,7 +48,7 @@ public class ItemStackBuilder {
         if(itemStack.getEnchantments() != null) {
             this.enchantments = itemStack.getEnchantments();
         }
-
+        this.userItem = itemStack;
     }
 
     public static ItemStackBuilder create() {
@@ -100,6 +102,9 @@ public class ItemStackBuilder {
     public ItemStackItemMetaBuilder withItemMeta() {
         ItemStackItemMetaBuilder metaBuilder = new ItemStackItemMetaBuilder(this);
         this.metaBuilder = metaBuilder;
+        if (userItem != null) {
+            metaBuilder.setItemMeta(userItem.getItemMeta());
+        }
         return metaBuilder;
     }
 
