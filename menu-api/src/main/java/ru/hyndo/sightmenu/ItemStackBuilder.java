@@ -134,6 +134,16 @@ public class ItemStackBuilder {
 
         public ItemStackItemMetaBuilder setItemMeta(ItemMeta meta) {
             this.userMeta = meta;
+            if (meta.getDisplayName() != null) {
+                this.name = meta.getDisplayName();
+            }
+            List<String> metaLore = meta.getLore();
+            if (metaLore != null && !metaLore.isEmpty()) {
+                this.lore = new ArrayList<>(metaLore);
+            }
+            if (meta.getItemFlags() != null && !meta.getItemFlags().isEmpty()) {
+                itemFlags = new ArrayList<>(meta.getItemFlags());
+            }
             return this;
         }
 
