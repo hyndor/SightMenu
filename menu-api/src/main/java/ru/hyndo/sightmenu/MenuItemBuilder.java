@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import ru.hyndo.sightmenu.item.IconRequest;
 import ru.hyndo.sightmenu.item.MenuIcon;
+import ru.hyndo.sightmenu.item.MenuItem;
 import ru.hyndo.sightmenu.item.MenuItemClick;
 
 import java.util.Collection;
@@ -56,6 +57,12 @@ public class MenuItemBuilder {
             return (T) this;
         }
 
+        public void addToBuilder(MenuTemplateBuilder.SingleMenuTemplateBuilder builder) {
+            builder.withItem(build());
+        }
+
+        public abstract MenuItem build();
+
     }
 
     public static class PerPlayerMenuItemBuilder extends AbstractMenuItemBuilder<PerPlayerMenuItemBuilder> {
@@ -71,6 +78,7 @@ public class MenuItemBuilder {
             return this;
         }
 
+        @Override
         public PerPlayerMenuItem build() {
             return new PerPlayerMenuItem(onClick, iconRequestConsumer, available);
         }
@@ -91,6 +99,7 @@ public class MenuItemBuilder {
             return this;
         }
 
+        @Override
         public CachedMenuItem build() {
             return new CachedMenuItem(onClick, menuIcon, available);
         }

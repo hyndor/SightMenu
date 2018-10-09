@@ -37,6 +37,7 @@ public class MenuListener implements Listener {
                 if (menuItem.isAvailable().test(new IconRequest(player, menuSession)))
                     menuItem.onClick().accept(new MenuItemClick(player, menuSession, event));
             });
+            template.getGlobalClickListener().accept(new MenuTemplate.GlobalMenuClick(player, menuSession, event, itemOptional.orElse(null)));
             event.setCancelled(true);
         });
     }

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 class MenuTemplateImpl implements MenuTemplate {
 
@@ -15,12 +16,18 @@ class MenuTemplateImpl implements MenuTemplate {
     private List<MenuItem> indexes;
     private int rows;
     private MenuOpenProcessor openProcessor;
+    private Consumer<GlobalMenuClick> globalClickListener;
+    private Runnable onClose;
 
-    MenuTemplateImpl(String name, List<MenuItem> indexes, int rows, MenuOpenProcessor openProcessor) {
+    MenuTemplateImpl(String name, List<MenuItem> indexes, int rows,
+                     MenuOpenProcessor openProcessor, Consumer<GlobalMenuClick> globalClickListener,
+                     Runnable onClose) {
         this.name = name;
         this.indexes = new ArrayList<>(indexes);
         this.rows = rows;
         this.openProcessor = openProcessor;
+        this.globalClickListener = globalClickListener;
+        this.onClose = onClose;
     }
 
     @Nonnull
@@ -44,6 +51,16 @@ class MenuTemplateImpl implements MenuTemplate {
     @Override
     public MenuOpenProcessor getOpenProcessor() {
         return openProcessor;
+    }
+
+    @Override
+    public Runnable onClose() {
+        return onClose;
+    }
+
+    @Override
+    public Consumer<GlobalMenuClick> getGlobalClickListener() {
+        return globalClickListener;
     }
 
     @Override

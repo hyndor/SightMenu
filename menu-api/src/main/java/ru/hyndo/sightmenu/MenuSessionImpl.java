@@ -16,12 +16,14 @@ public class MenuSessionImpl implements MenuSession {
     private MenuTemplate menuTemplate;
     private Player owner;
     private boolean isOpeningFinished;
+    private MenuOpenProcessor openProcessor;
     private Consumer<Map<String, Object>> headerConsumer;
 
     private Map<Integer, MenuItem> itemsByIndex;
 
-    MenuSessionImpl(MenuTemplate menuTemplate, MenuOpenProcessor openProcessor, Player owner, Consumer<Map<String, Object>> headerConsumer) {
+    protected MenuSessionImpl(MenuTemplate menuTemplate, MenuOpenProcessor openProcessor, Player owner, Consumer<Map<String, Object>> headerConsumer) {
         this.menuTemplate = menuTemplate;
+        this.openProcessor = openProcessor;
         this.headerConsumer = headerConsumer;
         this.owner = owner;
         OpenProcessorResponse response = openProcessor.apply(this, inventory -> {
@@ -71,6 +73,27 @@ public class MenuSessionImpl implements MenuSession {
     @Override
     public Consumer<Map<String, Object>> getHeaderConsumer() {
         return headerConsumer;
+    }
+
+    @Override
+    public void updateItems() {
+        isOpeningFinished = false;
+        openProcessor.apply(this, inventory1 -> {
+            this.inventory = inventory1;
+            isOpeningFinished = true;
+        });
+    }
+
+    @Override
+    public void updateItem(int index) {
+        OpenProcessorResponse response = openProcessor.updateItem(this, index);
+        this.itemsByIndex.putAll(response.getItemIndexes());
+    }
+
+    @Override
+    public void updateTemplate(MenuTemplate menuTemplate) {
+        this.menuTemplate = menuTemplate;
+        updateItems();
     }
 
     @Override

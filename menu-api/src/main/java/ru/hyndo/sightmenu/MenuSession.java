@@ -23,6 +23,12 @@ public interface MenuSession extends OwnedMenu, InventoryHolder {
     @Nonnull
     Consumer<Map<String, Object>> getHeaderConsumer();
 
+    void updateItems();
+
+    void updateItem(int index);
+
+    void updateTemplate(MenuTemplate menuTemplate);
+
     void setHeaderConsumer(@Nonnull Consumer<Map<String, Object>> consumer);
 
     default void addHeaderConsumer(@Nonnull Consumer<Map<String, Object>> consumer) {

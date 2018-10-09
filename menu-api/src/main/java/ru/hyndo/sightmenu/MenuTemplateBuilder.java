@@ -2,12 +2,14 @@ package ru.hyndo.sightmenu;
 
 import com.google.common.base.Preconditions;
 import ru.hyndo.sightmenu.item.MenuItem;
+import ru.hyndo.sightmenu.item.MenuItemClick;
 import ru.hyndo.sightmenu.paginated.PaginatedMenuTemplate;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class MenuTemplateBuilder {
@@ -28,6 +30,8 @@ public class MenuTemplateBuilder {
         private List<MenuItem> items = new ArrayList<>();
         private int rows = 6;
         private MenuOpenProcessor openProcessor = MenuOpenProcessors.standardOpen();
+        private Consumer<MenuTemplate.GlobalMenuClick> globalClickListener = (__) -> {};
+        private Runnable onClose;
 
         private SingleMenuTemplateBuilder() {
         }
@@ -35,6 +39,18 @@ public class MenuTemplateBuilder {
         public SingleMenuTemplateBuilder setName(String name) {
             Preconditions.checkNotNull(name, "Null name");
             this.name = name;
+            return this;
+        }
+
+        public SingleMenuTemplateBuilder withOnClose(Runnable onClose) {
+            Preconditions.checkNotNull(onClose, "onClose is null");
+            this.onClose = onClose;
+            return this;
+        }
+
+        public SingleMenuTemplateBuilder withGlobalClickListener(Consumer<MenuTemplate.GlobalMenuClick> listener) {
+            Preconditions.checkNotNull(listener, "Listener is null");
+            globalClickListener = globalClickListener.andThen(listener);
             return this;
         }
 
@@ -75,7 +91,7 @@ public class MenuTemplateBuilder {
         }
 
         public MenuTemplate createMenuTemplateImpl() {
-            return new MenuTemplateImpl(name, items, rows, openProcessor);
+            return new MenuTemplateImpl(name, items, rows, openProcessor, globalClickListener, onClose);
         }
     }
 

@@ -8,6 +8,10 @@ public interface MenuFactory {
 
     MenuSession createSingleSession(Player player, MenuTemplate menuTemplate);
 
+    default MenuSession replaceOrCreateCurrentSession(Player player, MenuTemplate menuTemplate) {
+        throw new UnsupportedOperationException("This menu factory does not support replacing sessions");
+    }
+
     PaginatedMenuSession createPaginatedSession(Player player, PaginatedMenuTemplate menuTemplate);
 
     InventorySwitcher createDefaultInventorySwitcher();
