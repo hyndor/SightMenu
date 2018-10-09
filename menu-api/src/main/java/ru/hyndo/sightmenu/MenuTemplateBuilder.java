@@ -1,6 +1,7 @@
 package ru.hyndo.sightmenu;
 
 import com.google.common.base.Preconditions;
+import org.bukkit.entity.Player;
 import ru.hyndo.sightmenu.item.MenuItem;
 import ru.hyndo.sightmenu.item.MenuItemClick;
 import ru.hyndo.sightmenu.paginated.PaginatedMenuTemplate;
@@ -31,7 +32,7 @@ public class MenuTemplateBuilder {
         private int rows = 6;
         private MenuOpenProcessor openProcessor = MenuOpenProcessors.standardOpen();
         private Consumer<MenuTemplate.GlobalMenuClick> globalClickListener = (__) -> {};
-        private Runnable onClose;
+        private Consumer<Player> onClose;
 
         private SingleMenuTemplateBuilder() {
         }
@@ -42,7 +43,7 @@ public class MenuTemplateBuilder {
             return this;
         }
 
-        public SingleMenuTemplateBuilder withOnClose(Runnable onClose) {
+        public SingleMenuTemplateBuilder withOnClose(Consumer<Player> onClose) {
             Preconditions.checkNotNull(onClose, "onClose is null");
             this.onClose = onClose;
             return this;

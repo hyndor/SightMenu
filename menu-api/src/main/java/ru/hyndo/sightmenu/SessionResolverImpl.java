@@ -54,7 +54,7 @@ public class SessionResolverImpl implements SessionResolver {
     void onInactiveSession(MenuSession session) {
         activeSessionsByTemplates.remove(session.getOwner(), session);
         playerSessions.remove(session.getOwner());
-        session.getTemplate().onClose().run();
+        session.getTemplate().onClose().accept(session.getOwner());
     }
 
 }

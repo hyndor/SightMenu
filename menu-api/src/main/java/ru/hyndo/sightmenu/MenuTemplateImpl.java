@@ -1,6 +1,7 @@
 package ru.hyndo.sightmenu;
 
 import com.google.common.collect.ImmutableSet;
+import org.bukkit.entity.Player;
 import ru.hyndo.sightmenu.item.MenuItem;
 
 import javax.annotation.Nonnull;
@@ -17,11 +18,11 @@ class MenuTemplateImpl implements MenuTemplate {
     private int rows;
     private MenuOpenProcessor openProcessor;
     private Consumer<GlobalMenuClick> globalClickListener;
-    private Runnable onClose;
+    private Consumer<Player> onClose;
 
     MenuTemplateImpl(String name, List<MenuItem> indexes, int rows,
                      MenuOpenProcessor openProcessor, Consumer<GlobalMenuClick> globalClickListener,
-                     Runnable onClose) {
+                     Consumer<Player> onClose) {
         this.name = name;
         this.indexes = new ArrayList<>(indexes);
         this.rows = rows;
@@ -54,7 +55,7 @@ class MenuTemplateImpl implements MenuTemplate {
     }
 
     @Override
-    public Runnable onClose() {
+    public Consumer<Player> onClose() {
         return onClose;
     }
 

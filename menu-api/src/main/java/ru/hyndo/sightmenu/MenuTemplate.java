@@ -20,8 +20,8 @@ public interface MenuTemplate {
 
     @Nonnull MenuOpenProcessor getOpenProcessor();
 
-    default Runnable onClose() {
-        return () -> {};
+    default Consumer<Player> onClose() {
+        return (p) -> {};
     }
 
     default Consumer<GlobalMenuClick> getGlobalClickListener() {
